@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\drago\.Rider2019.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\drago\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_Cube Game.643096862.00" t="ExcludeRecursive" />
+    <e p="D:\Data\Repositories\Cube-Game\Cube Game" t="IncludeFlat">
+      <e p="Cube Game.sln" t="IncludeFlat" />
+      <e p="Cube_World" t="IncludeRecursive">
+        <e p="App.config" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Block.cs" t="Include" />
+        <e p="Camera.cs" t="Include" />
+        <e p="Chunk.cs" t="Include" />
+        <e p="Cube Game.csproj" t="IncludeRecursive" />
+        <e p="Game.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive" />
+        <e p="OpenTK.dll.config" t="Include" />
+        <e p="packages.config" t="Include" />
+        <e p="Program.cs" t="Include" />
+        <e p="shader.frag" t="Include" />
+        <e p="shader.vert" t="Include" />
+        <e p="ShaderProgram.cs" t="Include" />
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4659ea50-18c4-4b57-bfca-532707ae02e6" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="OpenTK" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Cube_World/Block.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Cube_World/ShaderProgram.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7C074160-DD1A-4D91-9B45-B6E4C27A3BAC/10/c8c33bcc/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Cube_World/App.config" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Cube_World/Game.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Cube_World/Camera.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Cube_World/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6764F93F-9A3E-4037-817C-5D176911BDEA/44/0975d1d4/Matrix4.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/OpenTK/Volume.cs" />
+        <option value="$PROJECT_DIR$/OpenTK/shader.vert" />
+        <option value="$PROJECT_DIR$/OpenTK/Cube.cs" />
+        <option value="$PROJECT_DIR$/OpenTK/ShaderProgram.cs" />
+        <option value="$PROJECT_DIR$/OpenTK/Camera.cs" />
+        <option value="$PROJECT_DIR$/OpenTK/Program.cs" />
+        <option value="$PROJECT_DIR$/OpenTK/Block.cs" />
+        <option value="$PROJECT_DIR$/OpenTK/Game.cs" />
+        <option value="$PROJECT_DIR$/Cube_World/Game.cs" />
+        <option value="$PROJECT_DIR$/Cube_World/ShaderProgram.cs" />
+        <option value="$PROJECT_DIR$/Cube_World/Block.cs" />
+        <option value="$PROJECT_DIR$/Cube_World/Camera.cs" />
+        <option value="$PROJECT_DIR$/Cube_World/Program.cs" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1Zx8bC58RRIiiwJF7xSXq66nime" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Rider.SolutionExplorerActivator" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.General" />
+  </component>
+  <component name="RunManager">
+    <configuration name="OpenTK" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Cube_World/Cube_World.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="Console" />
+      <option name="PROJECT_TFM" value="" />
+      <method v="2">
+        <option name="Build" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4659ea50-18c4-4b57-bfca-532707ae02e6" name="Default Changelist" comment="" />
+      <created>1585769454129</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1585769454129</updated>
+      <workItem from="1585769456397" duration="1352000" />
+      <workItem from="1585771466889" duration="28620000" />
+      <workItem from="1585866732686" duration="17000" />
+      <workItem from="1585884451990" duration="524000" />
+      <workItem from="1585886180227" duration="168000" />
+      <workItem from="1585887750672" duration="1860000" />
+      <workItem from="1585889669719" duration="491000" />
+      <workItem from="1585890862537" duration="1232000" />
+      <workItem from="1585894055364" duration="242000" />
+    </task>
+    <servers />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="WindowStateProjectService">
+    <state x="734" y="355" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585793795877">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="734" y="355" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1585793795877" />
+    <state x="1029" y="536" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog" timestamp="1585772816659">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1029" y="536" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1585772816659" />
+    <state x="1128" y="515" key="FileChooserDialogImpl" timestamp="1585772898015">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1128" y="515" key="FileChooserDialogImpl/0.0.2560.1400@0.0.2560.1400" timestamp="1585772898015" />
+    <state width="2517" height="115" key="GridCell.Tab.0.bottom" timestamp="1585894296604">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2517" height="115" key="GridCell.Tab.0.bottom/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1585894296604" />
+    <state width="1877" height="76" key="GridCell.Tab.0.bottom/0.0.2560.1400/2560.0.1920.1040@2560.0.1920.1040" timestamp="1585892095377" />
+    <state width="1234" height="116" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1585866258003" />
+    <state width="2517" height="115" key="GridCell.Tab.0.center" timestamp="1585894296604">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2517" height="115" key="GridCell.Tab.0.center/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1585894296604" />
+    <state width="1877" height="76" key="GridCell.Tab.0.center/0.0.2560.1400/2560.0.1920.1040@2560.0.1920.1040" timestamp="1585892095377" />
+    <state width="1234" height="116" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1585866258003" />
+    <state width="2517" height="115" key="GridCell.Tab.0.left" timestamp="1585894296604">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2517" height="115" key="GridCell.Tab.0.left/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1585894296604" />
+    <state width="1877" height="76" key="GridCell.Tab.0.left/0.0.2560.1400/2560.0.1920.1040@2560.0.1920.1040" timestamp="1585892095377" />
+    <state width="1234" height="116" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1585866258003" />
+    <state width="2517" height="115" key="GridCell.Tab.0.right" timestamp="1585894296604">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="2517" height="115" key="GridCell.Tab.0.right/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1585894296604" />
+    <state width="1877" height="76" key="GridCell.Tab.0.right/0.0.2560.1400/2560.0.1920.1040@2560.0.1920.1040" timestamp="1585892095377" />
+    <state width="1234" height="116" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1585866258003" />
+    <state x="872" y="432" key="Rider.ProjectTemplateDialog.Size" timestamp="1585858365336">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="872" y="432" key="Rider.ProjectTemplateDialog.Size/0.0.2560.1400@0.0.2560.1400" timestamp="1585858365336" />
+    <state x="812" y="270" width="1134" height="893" key="SettingsEditor" timestamp="1585807841356">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="812" y="270" width="1134" height="893" key="SettingsEditor/0.0.2560.1400@0.0.2560.1400" timestamp="1585807841356" />
+  </component>
+</project>

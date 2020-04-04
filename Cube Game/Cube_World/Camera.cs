@@ -7,7 +7,7 @@ namespace Cube_Game
     {
         public Vector3 Position = Vector3.Zero;
         public Vector3 Orientation = new Vector3((float)Math.PI, 0f, 0f);
-        public float MoveSpeed = 0.2f;
+        public float MoveSpeed = 0.01f;
         public float MouseSensitivity = 0.0025f;
 
         public Camera()

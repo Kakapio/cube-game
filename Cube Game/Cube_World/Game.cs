@@ -15,7 +15,7 @@ namespace Cube_Game
         List<Block> blocks = new List<Block>();
         
         private Vector2 lastMousePos;
-        private float cubeScale = 0.25f;
+        private const float cubeScale = 0.25f;
         string activeShader = "default";
         int iboElements;
 
@@ -35,6 +35,16 @@ namespace Cube_Game
             lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
             CursorVisible = false;
         }
+        
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            Initialize();
+            GL.Enable(EnableCap.DepthTest);
+            GL.ClearColor(0.047f, 0.474f, 0.811f, 1.0f);
+            GL.PointSize(5f);
+        }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
@@ -48,12 +58,13 @@ namespace Cube_Game
 
             int vertCount = 0;
 
-            foreach (Block c in blocks)
+            //Here we build a mesh before handing it off.
+            foreach (Block block in blocks)
             {
-                vertices.AddRange(c.GetVertices().ToList());
-                indices.AddRange(c.GetIndices(vertCount).ToList());
-                colors.AddRange(c.GetColorData().ToList());
-                vertCount += c.VertCount;
+                vertices.AddRange(block.GetVertices().ToList());
+                indices.AddRange(block.GetIndices(vertCount).ToList());
+                colors.AddRange(block.GetColorData().ToList());
+                vertCount += block.VertCount;
             }
 
             Vector3[] vertData = vertices.ToArray();
@@ -78,7 +89,7 @@ namespace Cube_Game
             blocks[1].Position = new Vector3(-1f, -0.25f, -2.0f);
             blocks[1].Scale = Vector3.One * cubeScale;
 
-            for (int i = 0; i < blocks.Count; i++)
+            for (int i = 0; i < blocks.Count; i++) //TODO delete this not necessary
             {
                 blocks[i].Scale = Vector3.One * cubeScale;
 
@@ -87,12 +98,12 @@ namespace Cube_Game
                 blocks[i].Position = newPos;
             }
             
-            foreach (Block v in blocks)
+            foreach (Block block in blocks)
             {
-                v.CalculateModelMatrix();
-                v.ViewProjectionMatrix = camera.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, 
+                block.CalculateModelMatrix();
+                block.ViewProjectionMatrix = camera.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, 
                     Width / (float) Height, 1.0f, 40.0f);
-                v.ModelViewProjectionMatrix = v.ModelMatrix * v.ViewProjectionMatrix;
+                block.ModelViewProjectionMatrix = block.ModelMatrix * block.ViewProjectionMatrix;
             }
 
             GL.UseProgram(shaders[activeShader].ProgramID);
@@ -100,16 +111,6 @@ namespace Cube_Game
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, iboElements);
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indiceData.Length * sizeof(int)), indiceData, BufferUsageHint.StaticDraw);
-        }
-
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-
-            Initialize();
-            GL.Enable(EnableCap.DepthTest);
-            GL.ClearColor(0.047f, 0.474f, 0.811f, 1.0f);
-            GL.PointSize(5f);
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -121,11 +122,11 @@ namespace Cube_Game
             shaders[activeShader].EnableVertexAttribArrays();
 
             int indexAt = 0;
-            foreach (Block v in blocks)
+            foreach (Block block in blocks)
             {
-                GL.UniformMatrix4(shaders[activeShader].GetUniform("modelView"), false, ref v.ModelViewProjectionMatrix);
-                GL.DrawElements(BeginMode.Triangles, v.IndiceCount, DrawElementsType.UnsignedInt, indexAt * sizeof(uint));
-                indexAt += v.IndiceCount;
+                GL.UniformMatrix4(shaders[activeShader].GetUniform("modelView"), false, ref block.ModelViewProjectionMatrix);
+                GL.DrawElements(BeginMode.Triangles, block.IndiceCount, DrawElementsType.UnsignedInt, indexAt * sizeof(uint));
+                indexAt += block.IndiceCount;
             }
             
             shaders[activeShader].DisableVertexAttribArrays();

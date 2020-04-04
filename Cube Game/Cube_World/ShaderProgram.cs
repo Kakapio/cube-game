@@ -96,9 +96,9 @@ namespace Cube_Game
  
                 GL.GetActiveAttrib(ProgramID, i, 256, out length, out info.size, out info.type, out name);
  
-                info.name = name.ToString();
+                info.name = name;
                 info.address = GL.GetAttribLocation(ProgramID, info.name);
-                Attributes.Add(name.ToString(), info);
+                Attributes.Add(name, info);
             }
  
             for (int i = 0; i < UniformCount; i++)
@@ -110,8 +110,8 @@ namespace Cube_Game
 
                 GL.GetActiveUniform(ProgramID, i, 256, out length, out info.size, out info.type, out name);
                 
-                info.name = name.ToString();
-                Uniforms.Add(name.ToString(), info);
+                info.name = name;
+                Uniforms.Add(name, info);
                 info.address = GL.GetUniformLocation(ProgramID, info.name);
             }
         }

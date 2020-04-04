@@ -37,14 +37,14 @@ namespace Cube_Game
         {
             return new Vector3[] 
             {
-                new Vector3(-0.5f, -0.5f,  -0.5f),
-                new Vector3(0.5f, -0.5f,  -0.5f),
-                new Vector3(0.5f, 0.5f,  -0.5f),
-                new Vector3(-0.5f, 0.5f,  -0.5f),
-                new Vector3(-0.5f, -0.5f,  0.5f),
-                new Vector3(0.5f, -0.5f,  0.5f),
-                new Vector3(0.5f, 0.5f,  0.5f),
-                new Vector3(-0.5f, 0.5f,  0.5f),
+                new Vector3(-0.5f, -0.5f,  -0.5f), //Left Bottom Back
+                new Vector3(0.5f, -0.5f,  -0.5f), //Right Bottom Back
+                new Vector3(0.5f, 0.5f,  -0.5f), //Right Top Back
+                new Vector3(-0.5f, 0.5f,  -0.5f), //Left Top Back - One face is completed!
+                new Vector3(-0.5f, -0.5f,  0.5f), //Left Bottom Front
+                new Vector3(0.5f, -0.5f,  0.5f), //Right Bottom Front
+                new Vector3(0.5f, 0.5f,  0.5f), //Right Top Front
+                new Vector3(-0.5f, 0.5f,  0.5f), //Left Top Front
             };
         }
 

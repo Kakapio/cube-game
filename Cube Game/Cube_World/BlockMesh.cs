@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Cube_Game;
 using OpenTK;
 
 namespace Cube_World
@@ -23,9 +27,9 @@ namespace Cube_World
             };
         }
         
-        public static int[] GetIndices(int offset = 0)
+        public static int[] GetAllIndices(int offset = 0)
         {
-            int[] indices = new int[] 
+            int[] indices = 
             {
                 //left
                 0, 2, 1,
@@ -46,7 +50,7 @@ namespace Cube_World
                 0, 1, 5,
                 0, 5, 4
             };
-
+            
             if (offset != 0)
             {
                 for (int i = 0; i < indices.Length; i++)
@@ -56,6 +60,12 @@ namespace Cube_World
             }
             
             return indices;
+        }
+
+        public static int[] GetCulledIndices(List<Direction> directions, int offset = 0)
+        {
+            return new int[] 
+                {1, 2};
         }
         
         //TODO add a proper indice filtering method that returns a properly culled set of indices for a mesh
@@ -82,10 +92,37 @@ namespace Cube_World
                    Matrix4.CreateRotationZ(0) * Matrix4.CreateTranslation(position);
         }
         
-        public static Matrix4 CalculateModelMatrix(Vector3 position, Vector3 scale)
+        public static Matrix4 CalculateModelMatrix(Vector3 position, float scale)
         {
             return Matrix4.CreateScale(scale) * Matrix4.CreateRotationX(0) * Matrix4.CreateRotationY(0) * 
                    Matrix4.CreateRotationZ(0) * Matrix4.CreateTranslation(position);
+        }
+        
+        public static (Vector3[] vertices, int[] indices, Vector3[] colors) GenerateMeshData(Chunk chunk)
+        {
+            List<Vector3> vertices = new List<Vector3>();
+            List<int> indices = new List<int>();
+            List<Vector3> colors = new List<Vector3>();
+
+            int vertCount = 0;
+
+            for (int x = 0; x < chunk.Blocks.GetLength(0); x++)
+            {
+                for (int y = 0; y < chunk.Blocks.GetLength(1); y++)
+                {
+                    for (int z = 0; z < chunk.Blocks.GetLength(2); z++)
+                    {
+                        vertices.AddRange(BlockMesh.GetVertices().ToList());
+                        //Add the indices while maintaining proper order via an offset.
+                        indices.AddRange(BlockMesh.GetAllIndices(vertCount).ToList());
+                        colors.AddRange(BlockMesh.GetColorData().ToList());
+
+                        vertCount += BlockMesh.VertCount;
+                    }
+                }
+            }
+
+            return (vertices.ToArray(), indices.ToArray(), colors.ToArray());
         }
     }
 }

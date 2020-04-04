@@ -7,11 +7,19 @@ namespace Cube_Game
     {
         public Vector3 Position = Vector3.Zero;
         public Vector3 Orientation = new Vector3((float)Math.PI, 0f, 0f);
-        public float MoveSpeed = 0.01f;
+        public Matrix4 ViewProjectionMatrix;
+        public float MoveSpeed = 0.5f;
         public float MouseSensitivity = 0.0025f;
 
-        public Camera()
+        private int screenWidth, screenHeight;
+
+        public Camera(int Width, int Height)
         {
+            screenWidth = Width;
+            screenHeight = Height;
+            
+            ViewProjectionMatrix = GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f,
+                screenWidth / (float) screenHeight, 1.0f, 40.0f);
         }
 
         public Matrix4 GetViewMatrix()
@@ -48,6 +56,12 @@ namespace Cube_Game
 
             Orientation.X = (Orientation.X + x) % ((float) Math.PI * 2);
             Orientation.Y = Math.Max(Math.Min(Orientation.Y + y, (float)Math.PI / 2.0f - 0.1f), (float)-Math.PI / 2.0f + 0.1f);
+        }
+
+        public void UpdateViewProjectionMatrix() //TODO cache width and height instead?
+        {
+            ViewProjectionMatrix = GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f,
+                screenWidth / (float)screenHeight, 1.0f, 40.0f);
         }
     }
 }

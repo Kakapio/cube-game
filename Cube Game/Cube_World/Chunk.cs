@@ -1,22 +1,34 @@
 using System;
 using Cube_World;
+using OpenTK;
 
 namespace Cube_Game
 {
     public class Chunk
     {
-        public int[, ,] blocks = new int[16, 128, 16];
+        public int ChunkWidth { get; }
+        public int ChunkHeight { get; }
+        public int ChunkDepth { get; }
+        
+        public int[, ,] Blocks { get; }
+        public Matrix4[, ,] ModelViewMatrixProjections;
 
-        public Chunk()
+        public Chunk(int width = 16, int height = 128, int depth = 16)
         {
+            ChunkWidth = width;
+            ChunkHeight = height;
+            ChunkDepth = depth;
+            Blocks = new int[ChunkWidth, ChunkHeight, ChunkDepth];
+            ModelViewMatrixProjections = new Matrix4[ChunkWidth, ChunkHeight, ChunkDepth];
+            
             //Set every block to Air to start with.
-            for (int x = 0; x < blocks.GetLength(0); x++) //Iterate through all X-values
+            for (int x = 0; x < Blocks.GetLength(0); x++) //Iterate through all X-values
             {
-                for (int y = 0; y < blocks.GetLength(1); y++) //Iterate through each Y-value connected to every X-value
+                for (int y = 0; y < Blocks.GetLength(1); y++) //Iterate through each Y-value connected to every X-value
                 {
-                    for (int z = 0; z < blocks.GetLength(2); z++)
+                    for (int z = 0; z < Blocks.GetLength(2); z++)
                     {
-                        blocks[x, y, z] = (int)BlockType.Air;
+                        Blocks[x, y, z] = (int)BlockType.Air;
                     }
                 }
             }
@@ -29,13 +41,13 @@ namespace Cube_Game
         /// <param name="blockType"></param>
         public void FillUpToY(int yStop, BlockType blockType)
         {
-            for (int x = 0; x < blocks.GetLength(0); x++)
+            for (int x = 0; x < Blocks.GetLength(0); x++)
             {
                 for (int y = 0; y <= yStop; y++)
                 {
-                    for (int z = 0; z < blocks.GetLength(2); z++)
+                    for (int z = 0; z < Blocks.GetLength(2); z++)
                     {
-                        blocks[x, y, z] = (int)blockType;
+                        Blocks[x, y, z] = (int)blockType;
                     }
                 }
             }

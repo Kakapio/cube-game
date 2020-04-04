@@ -11,18 +11,18 @@ namespace Cube_Game
 {
     public class Game : GameWindow
     {
-        Camera camera = new Camera();
+        private Camera camera;
         Dictionary<string, ShaderProgram> shaders = new Dictionary<string, ShaderProgram>();
-        List<Block> blocks = new List<Block>();
         Chunk chunk = new Chunk();
         
         private Vector2 lastMousePos;
-        private const float cubeScale = 0.25f;
+        private const float cubeScale = 1f;
         string activeShader = "default";
         int iboElements;
 
         public Game (int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
         {
+            camera = new Camera(Width, Height);
         }
         
         void Initialize()
@@ -32,9 +32,6 @@ namespace Cube_Game
             shaders.Add("default", new ShaderProgram("shader.vert", "shader.frag", true));
             
             chunk.FillUpToY(50, BlockType.Dirt);
-            
-            blocks.Add(new Block());
-            blocks.Add(new Block());
             
             lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
             CursorVisible = false;
@@ -55,61 +52,34 @@ namespace Cube_Game
             base.OnUpdateFrame(e);
             
             ProcessInput();
+            camera.UpdateViewProjectionMatrix();
             
-            List<Vector3> vertices = new List<Vector3>();
-            List<int> indices = new List<int>();
-            List<Vector3> colors = new List<Vector3>();
-
-            int vertCount = 0;
-
-            //Here we build a mesh before handing it off.
-            foreach (Block block in blocks)
-            {
-                vertices.AddRange(block.GetVertices().ToList());
-                indices.AddRange(block.GetIndices(vertCount).ToList());
-                colors.AddRange(block.GetColorData().ToList());
-                vertCount += block.VertCount;
-            }
-
-            Vector3[] vertData = vertices.ToArray();
-            int[] indiceData = indices.ToArray();
-            Vector3[] colorData = colors.ToArray();
+            var (vertData, indiceData, colorData) = BlockMesh.GenerateMeshData(chunk);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vPosition"));
  
-            GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertData.Length * Vector3.SizeInBytes), vertData, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertData.Length * Vector3.SizeInBytes), vertData, BufferUsageHint.DynamicDraw);
             GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
  
             if (shaders[activeShader].GetAttribute("vColor") != -1)
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vColor"));
-                GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(colorData.Length * Vector3.SizeInBytes), colorData, BufferUsageHint.StaticDraw);
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(colorData.Length * Vector3.SizeInBytes), colorData, BufferUsageHint.DynamicDraw);
                 GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
             }
             
-            blocks[0].Position = new Vector3(-1.25f, -0.25f, -2.0f);
-            blocks[0].Scale = Vector3.One * cubeScale;
-            
-            blocks[1].Position = new Vector3(-1f, -0.25f, -2.0f);
-            blocks[1].Scale = Vector3.One * cubeScale;
-
-            for (int i = 0; i < blocks.Count; i++) //TODO delete this not necessary
+            for (int x = 0; x < chunk.Blocks.GetLength(0); x++) 
             {
-                blocks[i].Scale = Vector3.One * cubeScale;
-
-                Vector3 newPos = new Vector3(-2f, -0.25f, -2.0f);
-                newPos.X += i * cubeScale;
-                blocks[i].Position = newPos;
+                for (int y = 0; y < chunk.Blocks.GetLength(1); y++) 
+                {
+                    for (int z = 0; z < chunk.Blocks.GetLength(2); z++)
+                    {
+                        chunk.ModelViewMatrixProjections[x, y, z] =
+                            BlockMesh.CalculateModelMatrix(new Vector3(x, y, z), cubeScale) * camera.ViewProjectionMatrix;
+                    }
+                }
             }
             
-            foreach (Block block in blocks)
-            {
-                block.CalculateModelMatrix();
-                block.ViewProjectionMatrix = camera.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, 
-                    Width / (float) Height, 1.0f, 40.0f);
-                block.ModelViewProjectionMatrix = block.ModelMatrix * block.ViewProjectionMatrix;
-            }
-
             GL.UseProgram(shaders[activeShader].ProgramID);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
@@ -126,11 +96,19 @@ namespace Cube_Game
             shaders[activeShader].EnableVertexAttribArrays();
 
             int indexAt = 0;
-            foreach (Block block in blocks)
+            
+            for (int x = 0; x < chunk.Blocks.GetLength(0); x++) 
             {
-                GL.UniformMatrix4(shaders[activeShader].GetUniform("modelView"), false, ref block.ModelViewProjectionMatrix);
-                GL.DrawElements(BeginMode.Triangles, block.IndiceCount, DrawElementsType.UnsignedInt, indexAt * sizeof(uint));
-                indexAt += block.IndiceCount;
+                for (int y = 0; y < chunk.Blocks.GetLength(1); y++) 
+                {
+                    for (int z = 0; z < chunk.Blocks.GetLength(2); z++)
+                    {
+                        GL.UniformMatrix4(shaders[activeShader].GetUniform("modelView"), false,
+                            ref chunk.ModelViewMatrixProjections[x, y, z]);
+                        GL.DrawElements(BeginMode.Triangles, BlockMesh.IndiceCount, DrawElementsType.UnsignedInt, indexAt * sizeof(uint));
+                        indexAt += BlockMesh.IndiceCount;
+                    }
+                }
             }
             
             shaders[activeShader].DisableVertexAttribArrays();
@@ -152,11 +130,6 @@ namespace Cube_Game
 
             if (input.IsKeyDown(Key.Escape))
                 Exit();
-            
-            if (input.IsKeyDown(Key.F))
-            {
-                blocks.Add(new Block());
-            }
             
             if (input.IsKeyDown(Key.W))
             {

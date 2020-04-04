@@ -8,12 +8,12 @@
       <e p="Cube_World" t="IncludeRecursive">
         <e p="App.config" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
-        <e p="Block.cs" t="Include" />
         <e p="BlockMesh.cs" t="Include" />
         <e p="BlockType.cs" t="Include" />
         <e p="Camera.cs" t="Include" />
         <e p="Chunk.cs" t="Include" />
         <e p="Cube Game.csproj" t="IncludeRecursive" />
+        <e p="Direction.cs" t="Include" />
         <e p="Game.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive" />
         <e p="OpenTK.dll.config" t="Include" />

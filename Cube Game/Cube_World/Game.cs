@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cube_World;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
@@ -13,6 +14,7 @@ namespace Cube_Game
         Camera camera = new Camera();
         Dictionary<string, ShaderProgram> shaders = new Dictionary<string, ShaderProgram>();
         List<Block> blocks = new List<Block>();
+        Chunk chunk = new Chunk();
         
         private Vector2 lastMousePos;
         private const float cubeScale = 0.25f;
@@ -28,6 +30,8 @@ namespace Cube_Game
             GL.GenBuffers(1, out iboElements);
             
             shaders.Add("default", new ShaderProgram("shader.vert", "shader.frag", true));
+            
+            chunk.FillUpToY(50, BlockType.Dirt);
             
             blocks.Add(new Block());
             blocks.Add(new Block());

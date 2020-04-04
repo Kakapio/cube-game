@@ -9,6 +9,8 @@
         <e p="App.config" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="Block.cs" t="Include" />
+        <e p="BlockMesh.cs" t="Include" />
+        <e p="BlockType.cs" t="Include" />
         <e p="Camera.cs" t="Include" />
         <e p="Chunk.cs" t="Include" />
         <e p="Cube Game.csproj" t="IncludeRecursive" />

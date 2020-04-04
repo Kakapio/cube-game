@@ -38,9 +38,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockType.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Block.cs" />
     <Compile Include="Chunk.cs" />
+    <Compile Include="BlockMesh.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ShaderProgram.cs" />

@@ -5,10 +5,10 @@ namespace Cube_Game
 {
     public class Camera
     {
-        public Vector3 Position = Vector3.Zero;
+        public Vector3 Position = new Vector3(5, 2, 9);
         public Vector3 Orientation = new Vector3((float)Math.PI, 0f, 0f);
         public Matrix4 ViewProjectionMatrix;
-        public float MoveSpeed = 0.5f;
+        public float MoveSpeed = 0.1f;
         public float MouseSensitivity = 0.0025f;
 
         private int screenWidth, screenHeight;
@@ -33,15 +33,15 @@ namespace Cube_Game
             return Matrix4.LookAt(Position, Position + lookAt, Vector3.UnitY);
         }
 
-        public void Move(float x, float y, float z)
+        public void Move(Vector3 amount)
         {
             Vector3 offset = new Vector3();
             Vector3 forward = new Vector3((float)Math.Sin(Orientation.X), 0, (float)(Math.Cos(Orientation.X)));
             Vector3 right = new Vector3(-forward.Z, 0, forward.X);
 
-            offset += x * right;
-            offset += y * forward;
-            offset.Y += z;
+            offset += amount.X * right;
+            offset += amount.Y * forward;
+            offset.Y += amount.Z;
             
             offset.NormalizeFast();
             offset = Vector3.Multiply(offset, MoveSpeed);
@@ -58,7 +58,7 @@ namespace Cube_Game
             Orientation.Y = Math.Max(Math.Min(Orientation.Y + y, (float)Math.PI / 2.0f - 0.1f), (float)-Math.PI / 2.0f + 0.1f);
         }
 
-        public void UpdateViewProjectionMatrix() //TODO cache width and height instead?
+        public void UpdateViewProjectionMatrix()
         {
             ViewProjectionMatrix = GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f,
                 screenWidth / (float)screenHeight, 1.0f, 40.0f);

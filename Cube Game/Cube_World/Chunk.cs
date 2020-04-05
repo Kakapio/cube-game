@@ -1,5 +1,5 @@
 using System;
-using Cube_World;
+using System.Diagnostics;
 using OpenTK;
 
 namespace Cube_Game
@@ -35,22 +35,50 @@ namespace Cube_Game
         }
 
         /// <summary>
-        /// Fill up a chunk with a block up to a certain y-value, bottom to top.
+        /// Fill a chunk with a type of block, bottom to top.
         /// </summary>
         /// <param name="yStop"></param>
-        /// <param name="blockType"></param>
-        public void FillUpToY(int yStop, BlockType blockType)
+        /// <param name="block"></param>
+        public void FillUpToY(int yStop, BlockType block)
         {
             for (int x = 0; x < Blocks.GetLength(0); x++)
             {
-                for (int y = 0; y <= yStop; y++)
+                for (int y = 0; y < yStop; y++)
                 {
                     for (int z = 0; z < Blocks.GetLength(2); z++)
                     {
-                        Blocks[x, y, z] = (int)blockType;
+                        Blocks[x, y, z] = (int)block;
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Set the block at a given coordinate.
+        /// </summary>
+        /// <param name="coordinate"></param>
+        public void SetBlock(Vector3 coordinate, BlockType block)
+        {
+            if (VerifyCoordinate(coordinate))
+            {
+                Blocks[(int) coordinate.X, (int) coordinate.Y, (int) coordinate.Z] = (int)block;
+            }
+        }
+
+        /// <summary>
+        /// Returns false if a coordinate is out of the bounds of the chunk.
+        /// </summary>
+        /// <param name="coordinate"></param>
+        public bool VerifyCoordinate(Vector3 coordinate)
+        {
+            if (coordinate.X < 0 || coordinate.X > ChunkWidth - 1)
+                return false;
+            if (coordinate.Y < 0 || coordinate.Y > ChunkHeight - 1)
+                return false;
+            if (coordinate.Z < 0 || coordinate.Z > ChunkDepth - 1)
+                return false;
+            else
+                return true;
         }
     }
 }

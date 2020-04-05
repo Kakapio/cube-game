@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{5542720F-0B0B-4E71-AA44-C1C6DADB93B1}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Cube_World</RootNamespace>
-    <AssemblyName>Cube_World</AssemblyName>
+    <RootNamespace>Cube_Game</RootNamespace>
+    <AssemblyName>Cube_Game</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

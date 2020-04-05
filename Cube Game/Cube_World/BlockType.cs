@@ -1,4 +1,4 @@
-namespace Cube_World
+namespace Cube_Game
 {
     public enum BlockType
     {

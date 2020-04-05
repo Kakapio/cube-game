@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cube_World;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
@@ -12,26 +11,30 @@ namespace Cube_Game
     public class Game : GameWindow
     {
         private Camera camera;
-        Dictionary<string, ShaderProgram> shaders = new Dictionary<string, ShaderProgram>();
-        Chunk chunk = new Chunk();
+        private Dictionary<string, ShaderProgram> shaders = new Dictionary<string, ShaderProgram>();
+        private Chunk chunk = new Chunk();
         
         private Vector2 lastMousePos;
         private const float cubeScale = 1f;
-        string activeShader = "default";
-        int iboElements;
+        private string activeShader = "default";
+        private int iboElements;
 
         public Game (int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
         {
             camera = new Camera(Width, Height);
         }
         
-        void Initialize()
+        private void Initialize()
         {
             GL.GenBuffers(1, out iboElements);
             
             shaders.Add("default", new ShaderProgram("shader.vert", "shader.frag", true));
             
-            chunk.FillUpToY(50, BlockType.Dirt);
+            chunk.FillUpToY(1, BlockType.Dirt);
+            chunk.SetBlock(new Vector3(5, 0, 8), BlockType.Air);
+            chunk.SetBlock(new Vector3(5, 0, 9), BlockType.Air);
+            chunk.SetBlock(new Vector3(0, 1, 0), BlockType.Dirt);
+            chunk.SetBlock(new Vector3(1, 1, 0), BlockType.Dirt);
             
             lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
             CursorVisible = false;
@@ -51,7 +54,7 @@ namespace Cube_Game
         {
             base.OnUpdateFrame(e);
             
-            ProcessInput();
+            ProcessInput((float)e.Time);
             camera.UpdateViewProjectionMatrix();
             
             var (vertData, indiceData, colorData) = BlockMesh.GenerateMeshData(chunk);
@@ -68,18 +71,6 @@ namespace Cube_Game
                 GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
             }
             
-            for (int x = 0; x < chunk.Blocks.GetLength(0); x++) 
-            {
-                for (int y = 0; y < chunk.Blocks.GetLength(1); y++) 
-                {
-                    for (int z = 0; z < chunk.Blocks.GetLength(2); z++)
-                    {
-                        chunk.ModelViewMatrixProjections[x, y, z] =
-                            BlockMesh.CalculateModelMatrix(new Vector3(x, y, z), cubeScale) * camera.ViewProjectionMatrix;
-                    }
-                }
-            }
-            
             GL.UseProgram(shaders[activeShader].ProgramID);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
@@ -90,7 +81,7 @@ namespace Cube_Game
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
-
+            
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             shaders[activeShader].EnableVertexAttribArrays();
@@ -103,10 +94,17 @@ namespace Cube_Game
                 {
                     for (int z = 0; z < chunk.Blocks.GetLength(2); z++)
                     {
-                        GL.UniformMatrix4(shaders[activeShader].GetUniform("modelView"), false,
-                            ref chunk.ModelViewMatrixProjections[x, y, z]);
-                        GL.DrawElements(BeginMode.Triangles, BlockMesh.IndiceCount, DrawElementsType.UnsignedInt, indexAt * sizeof(uint));
-                        indexAt += BlockMesh.IndiceCount;
+                        //Don't render air blocks.
+                        if (chunk.Blocks[x, y, z] != (int)BlockType.Air)
+                        {
+                            //Calculate the projection of the current block accounting for its position.
+                            Matrix4 modelViewProjection = BlockMesh.CalculateModelMatrix(new Vector3(x, y, z)) * camera.ViewProjectionMatrix;
+                            
+                            GL.UniformMatrix4(shaders[activeShader].GetUniform("modelView"), false,
+                                ref modelViewProjection);
+                            GL.DrawElements(BeginMode.Triangles, BlockMesh.IndiceCount, DrawElementsType.UnsignedInt, indexAt * sizeof(uint));
+                            indexAt += BlockMesh.IndiceCount;
+                        }
                     }
                 }
             }
@@ -124,7 +122,7 @@ namespace Cube_Game
             lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y); 
         }
 
-        void ProcessInput()
+        void ProcessInput(float deltaTime)
         {
             KeyboardState input = Keyboard.GetState();
 
@@ -133,29 +131,29 @@ namespace Cube_Game
             
             if (input.IsKeyDown(Key.W))
             {
-                camera.Move(0f, 0.1f, 0f);
+                camera.Move(new Vector3(0f, 0.1f, 0f) * deltaTime);
             }
             else if (input.IsKeyDown(Key.S))
             {
-                camera.Move(0f, -0.1f, 0f);
+                camera.Move(new Vector3(0f, -0.1f, 0f) * deltaTime);
             }
  
             if (input.IsKeyDown(Key.A))
             {
-                camera.Move(-0.1f, 0f, 0f);
+                camera.Move(new Vector3(-0.1f, 0f, 0f) * deltaTime);
             }
             else if (input.IsKeyDown(Key.D))
             {
-                camera.Move(0.1f, 0f, 0f);
+                camera.Move(new Vector3(0.1f, 0f, 0f) * deltaTime);
             }
  
-            if (input.IsKeyDown(Key.Q))
+            if (input.IsKeyDown(Key.Space))
             {
-                camera.Move(0f, 0f, 0.1f);
+                camera.Move(new Vector3(0f, 0f, 0.1f) * deltaTime);
             }
-            else if (input.IsKeyDown(Key.E))
+            else if (input.IsKeyDown(Key.ShiftLeft))
             {
-                camera.Move(0f, 0f, -0.1f);
+                camera.Move(new Vector3(0f, 0f, -0.1f) * deltaTime);
             }
 
             if (Focused)

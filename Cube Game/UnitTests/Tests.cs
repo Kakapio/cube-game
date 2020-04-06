@@ -27,7 +27,7 @@ namespace UnitTests
         }
 
         [Test]
-        public void ReplaceBlock_Input_Exception_Test()
+        public void ReplaceBlock_Test()
         {
             Chunk chunk = new Chunk();
             Vector3 coordinate = new Vector3(20, 15, 15);
@@ -44,7 +44,7 @@ namespace UnitTests
             chunk.SetBlock(new Vector3(5, 4, 5), BlockType.Dirt); //below blocked
             chunk.SetBlock(new Vector3(5, 6, 5), BlockType.Dirt); //above blocked
 
-            var result = BlockMesh.SidesExposedToAir(new Vector3(5, 5, 5), chunk);
+            var result = chunk.SidesExposedToAir(new Vector3(5, 5, 5));
             
             Assert.AreEqual(result, new Direction[] {Direction.Left, Direction.Front, Direction.Behind});
         }
@@ -55,9 +55,37 @@ namespace UnitTests
             Chunk chunk = new Chunk();
             chunk.SetBlock(new Vector3(0, 0, 0), BlockType.Dirt); //base
 
-            var result = BlockMesh.SidesExposedToAir(new Vector3(0, 0, 0), chunk);
+            var result = chunk.SidesExposedToAir(new Vector3(0, 0, 0));
             
             Assert.AreEqual(result, new Direction[] {Direction.Above, Direction.Right, Direction.Front});
+        }
+
+        [Test]
+        public void GetAllVertices_Offset_Test()
+        {
+            //offset 5 blocks to the right, 1 up, 1 in.
+            var result = BlockMesh.GetAllVertices(new Vector3(5, 1, 1)); 
+            
+            Assert.AreEqual(result, new Vector3[]
+            {
+                new Vector3(4.5f, 0.5f,  0.5f), //Left Bottom Back
+                new Vector3(5.5f, 0.5f,  0.5f), //Right Bottom Back
+                new Vector3(5.5f, 1.5f,  0.5f), //Right Top Back
+                new Vector3(4.5f, 1.5f,  0.5f), //Left Top Back - One face is completed!
+                new Vector3(4.5f, 0.5f,  1.5f), //Left Bottom Front
+                new Vector3(5.5f, 0.5f,  1.5f), //Right Bottom Front
+                new Vector3(5.5f, 1.5f,  1.5f), //Right Top Front
+                new Vector3(4.5f, 1.5f,  1.5f), //Left Top Front
+            });
+        }
+        
+        [Test]
+        public void GetVerticeCount_Test()
+        {
+            Chunk chunk = new Chunk();
+            chunk.FillUpToY(1, BlockType.Dirt);
+            
+            Assert.AreEqual(chunk.GetVerticeCount(), 9216); //16 blocks * 16 blocks * 36 indices per block.
         }
     }
 }

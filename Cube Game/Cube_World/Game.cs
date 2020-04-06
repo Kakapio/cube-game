@@ -15,7 +15,7 @@ namespace Cube_Game
         private Chunk chunk = new Chunk();
         
         private Vector2 lastMousePos;
-        private const float cubeScale = 1f;
+        private const float CubeScale = 1f;
         private string activeShader = "default";
         private int iboElements;
 
@@ -35,6 +35,7 @@ namespace Cube_Game
             chunk.SetBlock(new Vector3(5, 0, 9), BlockType.Air);
             chunk.SetBlock(new Vector3(0, 1, 0), BlockType.Dirt);
             chunk.SetBlock(new Vector3(1, 1, 0), BlockType.Dirt);
+            chunk.SetBlock(new Vector3(5, 1, 5), BlockType.Dirt);
             
             lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
             CursorVisible = false;
@@ -57,7 +58,7 @@ namespace Cube_Game
             ProcessInput((float)e.Time);
             camera.UpdateViewProjectionMatrix();
             
-            var (vertData, indiceData, colorData) = BlockMesh.GenerateMeshData(chunk);
+            var (vertData, indiceData, colorData) = chunk.GenerateMeshData();
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vPosition"));
  
@@ -81,33 +82,16 @@ namespace Cube_Game
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
+            Console.WriteLine(chunk.GetVerticeCount());
             
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             shaders[activeShader].EnableVertexAttribArrays();
-
-            int indexAt = 0;
             
-            for (int x = 0; x < chunk.Blocks.GetLength(0); x++) 
-            {
-                for (int y = 0; y < chunk.Blocks.GetLength(1); y++) 
-                {
-                    for (int z = 0; z < chunk.Blocks.GetLength(2); z++)
-                    {
-                        //Don't render air blocks.
-                        if (chunk.Blocks[x, y, z] != (int)BlockType.Air)
-                        {
-                            //Calculate the projection of the current block accounting for its position.
-                            Matrix4 modelViewProjection = BlockMesh.CalculateModelMatrix(new Vector3(x, y, z)) * camera.ViewProjectionMatrix;
+            Matrix4 modelViewProjection = Matrix4.Identity * camera.ViewProjectionMatrix;
                             
-                            GL.UniformMatrix4(shaders[activeShader].GetUniform("modelView"), false,
-                                ref modelViewProjection);
-                            GL.DrawElements(BeginMode.Triangles, BlockMesh.IndiceCount, DrawElementsType.UnsignedInt, indexAt * sizeof(uint));
-                            indexAt += BlockMesh.IndiceCount;
-                        }
-                    }
-                }
-            }
+            GL.UniformMatrix4(shaders[activeShader].GetUniform("modelView"), false, ref modelViewProjection);
+            GL.DrawElements(BeginMode.Triangles, chunk.GetVerticeCount(), DrawElementsType.UnsignedInt, 0);
             
             shaders[activeShader].DisableVertexAttribArrays();
 

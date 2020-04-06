@@ -15,9 +15,9 @@ namespace Cube_Game
         /// Returns all the vertices of a cube.
         /// </summary>
         /// <returns></returns>
-        public static Vector3[] GetAllVertices()
+        public static Vector3[] GetAllVertices(Vector3 offset = new Vector3())
         {
-            return new Vector3[] 
+            Vector3[] vertices =
             {
                 new Vector3(-0.5f, -0.5f,  -0.5f), //Left Bottom Back
                 new Vector3(0.5f, -0.5f,  -0.5f), //Right Bottom Back
@@ -28,6 +28,16 @@ namespace Cube_Game
                 new Vector3(0.5f, 0.5f,  0.5f), //Right Top Front
                 new Vector3(-0.5f, 0.5f,  0.5f), //Left Top Front
             };
+            
+            if (offset != Vector3.Zero)
+            {
+                for (int i = 0; i < vertices.Length; i++)
+                {
+                    vertices[i] += offset;
+                }
+            }
+
+            return vertices;
         }
         
         /// <summary>
@@ -74,10 +84,10 @@ namespace Cube_Game
         /// Generate a cube's indices given the sides that are to be rendered.
         /// </summary>
         /// <param name="directions"></param>
-        /// <param name="usedVerticeCount"></param>
+        /// <param name="usedIndiceCount"></param>
         /// <param name="offset"></param>
         /// <returns></returns>
-        public static int[] GetCulledIndices(List<Direction> directions, out int usedVerticeCount, int offset = 0)
+        public static int[] GetCulledIndices(List<Direction> directions, out int usedIndiceCount, int offset = 0)
         {
             int[] leftIndices = {0, 2, 1, 0, 3, 2};
             int[] behindIndices = {1, 2, 6, 6, 5, 1};
@@ -86,7 +96,7 @@ namespace Cube_Game
             int[] frontIndices = {0, 7, 3, 0, 4, 7};
             int[] belowIndices = {0, 1, 5, 0, 5, 4};
 
-            List<int> finalArray = new List<int>();
+            List<int> culledIndices = new List<int>();
 
             //Add all the requested directions to a temporary list.
             foreach (Direction direction in directions)
@@ -94,65 +104,48 @@ namespace Cube_Game
                 switch (direction)
                 {
                     case Direction.Left:
-                        finalArray.AddRange(leftIndices);
+                        culledIndices.AddRange(leftIndices);
                         break;
                     case Direction.Behind:
-                        finalArray.AddRange(behindIndices);
+                        culledIndices.AddRange(behindIndices);
                         break;
                     case Direction.Right:
-                        finalArray.AddRange(rightIndices);
+                        culledIndices.AddRange(rightIndices);
                         break;
                     case Direction.Above:
-                        finalArray.AddRange(aboveIndices);
+                        culledIndices.AddRange(aboveIndices);
                         break;
                     case Direction.Front:
-                        finalArray.AddRange(frontIndices);
+                        culledIndices.AddRange(frontIndices);
                         break;
                     case Direction.Below:
-                        finalArray.AddRange(belowIndices);
+                        culledIndices.AddRange(belowIndices);
                         break;
                 }
             }
-
-            usedVerticeCount = directions.Count * 6;
-            return finalArray.ToArray();
-        }
-
-        /// <summary>
-        /// Return the directions around a block that are exposed to air.
-        /// </summary>
-        /// <returns></returns>
-        public static Direction[] SidesExposedToAir(Vector3 coordinate, Chunk chunk)
-        {
-            List<Direction> directions = new List<Direction>();
-            Vector3 above, below, left, right, front, behind;
-            above = below = left = right = front = behind = coordinate;
-            above.Y += 1;
-            below.Y -= 1;
-            left.X -= 1;
-            right.X += 1;
-            front.Z += 1;
-            behind.Z -= 1;
             
-            if (chunk.VerifyCoordinate(coordinate))
+            if (offset != 0)
             {
-                if (chunk.VerifyCoordinate(above) && chunk.Blocks[(int)above.X, (int)above.Y, (int)above.Z] == 0)
-                    directions.Add(Direction.Above);
-                if (chunk.VerifyCoordinate(below) && chunk.Blocks[(int)below.X, (int)below.Y, (int)below.Z] == 0)
-                    directions.Add(Direction.Below);
-                if (chunk.VerifyCoordinate(left) && chunk.Blocks[(int)left.X, (int)left.Y, (int)left.Z] == 0)
-                    directions.Add(Direction.Left);
-                if (chunk.VerifyCoordinate(right) && chunk.Blocks[(int)right.X, (int)right.Y, (int)right.Z] == 0)
-                    directions.Add(Direction.Right);
-                if (chunk.VerifyCoordinate(front) && chunk.Blocks[(int)front.X, (int)front.Y, (int)front.Z] == 0)
-                    directions.Add(Direction.Front);
-                if (chunk.VerifyCoordinate(behind) && chunk.Blocks[(int)behind.X, (int)behind.Y, (int)behind.Z] == 0)
-                    directions.Add(Direction.Behind);
+                for (int i = 0; i < culledIndices.Count; i++)
+                {
+                    culledIndices[i] += offset;
+                }
             }
 
-            return directions.ToArray();
+            usedIndiceCount = directions.Count * 6; //Each face has 6 indices.
+            return culledIndices.ToArray();
         }
         
+        // public static int[] GetCulledVertices (List<Direction> directions, out int usedIndiceCount, int offset = 0)
+        // {
+        //     int[] leftVertices = {0, 2, 1, 0, 3, 2};
+        //     int[] behindVertices = {1, 2, 6, 6, 5, 1};
+        //     int[] rightVertices = {4, 5, 6, 6, 7, 4};
+        //     int[] aboveVertices = {2, 3, 6, 6, 3, 7};
+        //     int[] frontVertices = {0, 7, 3, 0, 4, 7};
+        //     int[] belowVertices = {0, 1, 5, 0, 5, 4};
+        // }
+
         public static Vector3[] GetColorData()
         {
             return new Vector3[] 
@@ -172,37 +165,6 @@ namespace Cube_Game
         {
             return Matrix4.CreateScale(scale) * Matrix4.CreateRotationX(0) * Matrix4.CreateRotationY(0) * 
                    Matrix4.CreateRotationZ(0) * Matrix4.CreateTranslation(position);
-        }
-        
-        public static (Vector3[] vertices, int[] indices, Vector3[] colors) GenerateMeshData(Chunk chunk)
-        {
-            List<Vector3> vertices = new List<Vector3>();
-            List<int> indices = new List<int>();
-            List<Vector3> colors = new List<Vector3>();
-
-            int vertCount = 0;
-
-            for (int x = 0; x < chunk.Blocks.GetLength(0); x++)
-            {
-                for (int y = 0; y < chunk.Blocks.GetLength(1); y++)
-                {
-                    for (int z = 0; z < chunk.Blocks.GetLength(2); z++)
-                    {
-                        //Don't hand back mesh data for air blocks.
-                        if (chunk.Blocks[x, y, z] != (int) BlockType.Air)
-                        {
-                            vertices.AddRange(GetAllVertices().ToList());
-                            //Add the indices while maintaining proper order via an offset.
-                            indices.AddRange(GetAllIndices(vertCount).ToList());
-                            colors.AddRange(GetColorData().ToList());
-
-                            vertCount += VertCount;
-                        }
-                    }
-                }
-            }
-
-            return (vertices.ToArray(), indices.ToArray(), colors.ToArray());
         }
     }
 }

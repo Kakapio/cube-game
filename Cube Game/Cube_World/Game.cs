@@ -19,6 +19,10 @@ namespace Cube_Game
         private string activeShader = "default";
         private int iboElements;
 
+        private Vector3[] vertData;
+        private int[] indiceData;
+        private Vector3[] colorData;
+
         public Game (int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
         {
             camera = new Camera(Width, Height);
@@ -30,7 +34,7 @@ namespace Cube_Game
             
             shaders.Add("default", new ShaderProgram("shader.vert", "shader.frag", true));
             
-            chunk.FillUpToY(15, BlockType.Dirt);
+            chunk.FillUpToY(128, BlockType.Dirt);
             chunk.SetBlock(new Vector3(5, 15, 0), BlockType.Dirt);
             chunk.SetBlock(new Vector3(5, 0, 8), BlockType.Air);
             chunk.SetBlock(new Vector3(5, 0, 9), BlockType.Air);
@@ -45,9 +49,8 @@ namespace Cube_Game
 
             Initialize();
             GL.Enable(EnableCap.DepthTest);
-            //GL.CullFace(CullFaceMode.Back);
+            //GL.Enable(EnableCap.CullFace);
             GL.ClearColor(0.047f, 0.474f, 0.811f, 1.0f);
-            GL.PointSize(5f);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -56,8 +59,12 @@ namespace Cube_Game
             
             ProcessInput((float)e.Time);
             camera.UpdateViewProjectionMatrix();
-            
-            var (vertData, indiceData, colorData) = chunk.GenerateMeshData();
+
+            if (chunk.HasChanged)
+            {
+                (vertData, indiceData, colorData) = chunk.GenerateMeshData();
+                chunk.HasChanged = false;
+            }
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vPosition"));
  

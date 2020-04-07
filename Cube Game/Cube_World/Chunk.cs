@@ -14,6 +14,7 @@ namespace Cube_Game
         public int ChunkDepth { get; }
         public int UsedVerticeCount { get; private set; }
         public int UsedIndiceCount { get; private set; }
+        public bool HasChanged { get; set; } //used to indicate whether the chunk has been modified since last mesh data was sent out.
         
         public int[, ,] Blocks { get; }
 
@@ -22,6 +23,7 @@ namespace Cube_Game
             ChunkWidth = width;
             ChunkHeight = height;
             ChunkDepth = depth;
+            HasChanged = true;
             Blocks = new int[ChunkWidth, ChunkHeight, ChunkDepth];
 
             //Set every block to Air to start with.
@@ -195,6 +197,7 @@ namespace Cube_Game
 
             UsedVerticeCount = vertCount;
             UsedIndiceCount = indiceCount;
+            HasChanged = false; //method was called, meaning the new data has been sent back out.
             
             return (vertices.ToArray(), indices.ToArray(), colors.ToArray());
         }

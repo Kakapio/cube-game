@@ -30,12 +30,10 @@ namespace Cube_Game
             
             shaders.Add("default", new ShaderProgram("shader.vert", "shader.frag", true));
             
-            chunk.FillUpToY(1, BlockType.Dirt);
+            chunk.FillUpToY(15, BlockType.Dirt);
+            chunk.SetBlock(new Vector3(5, 15, 0), BlockType.Dirt);
             chunk.SetBlock(new Vector3(5, 0, 8), BlockType.Air);
             chunk.SetBlock(new Vector3(5, 0, 9), BlockType.Air);
-            chunk.SetBlock(new Vector3(0, 1, 0), BlockType.Dirt);
-            chunk.SetBlock(new Vector3(1, 1, 0), BlockType.Dirt);
-            chunk.SetBlock(new Vector3(5, 1, 5), BlockType.Dirt);
             
             lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
             CursorVisible = false;
@@ -47,6 +45,7 @@ namespace Cube_Game
 
             Initialize();
             GL.Enable(EnableCap.DepthTest);
+            //GL.CullFace(CullFaceMode.Back);
             GL.ClearColor(0.047f, 0.474f, 0.811f, 1.0f);
             GL.PointSize(5f);
         }
@@ -82,16 +81,15 @@ namespace Cube_Game
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
-            Console.WriteLine(chunk.GetVerticeCount());
             
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             shaders[activeShader].EnableVertexAttribArrays();
             
-            Matrix4 modelViewProjection = Matrix4.Identity * camera.ViewProjectionMatrix;
+            Matrix4 modelViewProjection = camera.ViewProjectionMatrix;
                             
             GL.UniformMatrix4(shaders[activeShader].GetUniform("modelView"), false, ref modelViewProjection);
-            GL.DrawElements(BeginMode.Triangles, chunk.GetVerticeCount(), DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(BeginMode.Triangles, chunk.UsedIndiceCount, DrawElementsType.UnsignedInt, 0);
             
             shaders[activeShader].DisableVertexAttribArrays();
 

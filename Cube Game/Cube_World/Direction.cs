@@ -4,9 +4,9 @@ namespace Cube_Game
     {
         Above,
         Below,
-        Left,
-        Right,
-        Front,
-        Behind
+        West,
+        East,
+        North,
+        South
     }
 }

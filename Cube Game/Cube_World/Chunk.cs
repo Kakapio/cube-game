@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using OpenTK;
 
@@ -11,9 +12,10 @@ namespace Cube_Game
         public int ChunkWidth { get; }
         public int ChunkHeight { get; }
         public int ChunkDepth { get; }
+        public int UsedVerticeCount { get; private set; }
+        public int UsedIndiceCount { get; private set; }
         
         public int[, ,] Blocks { get; }
-        public Matrix4[, ,] ModelViewMatrixProjections;
 
         public Chunk(int width = 16, int height = 128, int depth = 16)
         {
@@ -21,8 +23,7 @@ namespace Cube_Game
             ChunkHeight = height;
             ChunkDepth = depth;
             Blocks = new int[ChunkWidth, ChunkHeight, ChunkDepth];
-            ModelViewMatrixProjections = new Matrix4[ChunkWidth, ChunkHeight, ChunkDepth];
-            
+
             //Set every block to Air to start with.
             for (int x = 0; x < ChunkWidth; x++) //Iterate through all X-values
             {
@@ -66,6 +67,21 @@ namespace Cube_Game
                 Blocks[(int)coordinate.X, (int)coordinate.Y, (int)coordinate.Z] = (int)block;
             }
         }
+        
+        /// <summary>
+        /// Return the block at a given coordinate
+        /// </summary>
+        /// <param name="coordinate"></param>
+        /// <param name="block"></param>
+        public int GetBlock(Vector3 coordinate)
+        {
+            if (VerifyCoordinate(coordinate))
+            {
+                return Blocks[(int) coordinate.X, (int) coordinate.Y, (int) coordinate.Z];
+            }
+            else
+                throw new InvalidDataException("Coordinates were invalid!");
+        }
 
         /// <summary>
         /// Returns false if a coordinate is out of the bounds of the chunk.
@@ -89,83 +105,61 @@ namespace Cube_Game
         /// <returns></returns>
         public List<Direction> SidesExposedToAir(Vector3 coordinate)
         {
+            if (VerifyCoordinate(coordinate) == false)
+                throw new InvalidDataException("Coordinates were invalid!");
+            if (GetBlock(coordinate) == (int)BlockType.Air)
+                throw new InvalidDataException("Block at given coordinate is an air block!");
+            
             List<Direction> directions = new List<Direction>();
-            Vector3 above, below, left, right, front, behind;
-            above = below = left = right = front = behind = coordinate;
+            Vector3 above, below, west, east, north, south;
+            above = below = west = east = north = south = coordinate;
             above.Y += 1;
             below.Y -= 1;
-            left.X -= 1;
-            right.X += 1;
-            front.Z += 1;
-            behind.Z -= 1;
+            west.X -= 1;
+            east.X += 1;
+            north.Z += 1;
+            south.Z -= 1;
             
-            if (VerifyCoordinate(coordinate))
+            if (VerifyCoordinate(above) && Blocks[(int)above.X, (int)above.Y, (int)above.Z] == 0)
             {
-                if (VerifyCoordinate(above) && Blocks[(int)above.X, (int)above.Y, (int)above.Z] == 0)
-                {
-                    directions.Add(Direction.Above);
-                }
-                if (VerifyCoordinate(below) && Blocks[(int)below.X, (int)below.Y, (int)below.Z] == 0)
-                {
-                    directions.Add(Direction.Below);
-                }
-                if (VerifyCoordinate(left) && Blocks[(int)left.X, (int)left.Y, (int)left.Z] == 0)
-                {
-                    directions.Add(Direction.Left);
-                }
-                if (VerifyCoordinate(right) && Blocks[(int)right.X, (int)right.Y, (int)right.Z] == 0)
-                {
-                    directions.Add(Direction.Right);
-                }
-                if (VerifyCoordinate(front) && Blocks[(int)front.X, (int)front.Y, (int)front.Z] == 0)
-                {
-                    directions.Add(Direction.Front);
-                }
-                if (VerifyCoordinate(behind) && Blocks[(int)behind.X, (int)behind.Y, (int)behind.Z] == 0)
-                {
-                    directions.Add(Direction.Behind);
-                }
-                
-                //Handling corner blocks. Their exposed faces should still be rendered.
-                //Note: Do not try to render corner blocks of the y-axis.
-                if ((int)coordinate.X == 0 && !directions.Contains(Direction.Left))
-                    directions.Add(Direction.Front);
-                if ((int)coordinate.X == 0 && !directions.Contains(Direction.Right))
-                    directions.Add(Direction.Behind);
-                if ((int)coordinate.Y == 0 && !directions.Contains(Direction.Below))
-                    directions.Add(Direction.Below);
-                if ((int)coordinate.Z == 0 && !directions.Contains(Direction.Behind))
-                    directions.Add(Direction.Left);
-                if ((int)coordinate.Z == ChunkDepth - 1 && !directions.Contains(Direction.Front))
-                    directions.Add(Direction.Right);
+                directions.Add(Direction.Above);
             }
-
+            if (VerifyCoordinate(below) && Blocks[(int)below.X, (int)below.Y, (int)below.Z] == 0)
+            {
+                directions.Add(Direction.Below);
+            }
+            if (VerifyCoordinate(west) && Blocks[(int)west.X, (int)west.Y, (int)west.Z] == 0)
+            {
+                directions.Add(Direction.West);
+            }
+            if (VerifyCoordinate(east) && Blocks[(int)east.X, (int)east.Y, (int)east.Z] == 0)
+            {
+                directions.Add(Direction.East);
+            }
+            if (VerifyCoordinate(north) && Blocks[(int)north.X, (int)north.Y, (int)north.Z] == 0)
+            {
+                directions.Add(Direction.North);
+            }
+            if (VerifyCoordinate(south) && Blocks[(int)south.X, (int)south.Y, (int)south.Z] == 0)
+            {
+                directions.Add(Direction.South);
+            }
+            
+            // Handling corner blocks. Their exposed faces should still be rendered.
+            if ((int)coordinate.Y == 0 && !directions.Contains(Direction.Below))
+                directions.Add(Direction.Below);
+            if ((int)coordinate.X == 0 && !directions.Contains(Direction.West))
+                directions.Add(Direction.West);
+            if ((int)coordinate.X == ChunkWidth - 1 && !directions.Contains(Direction.East))
+                directions.Add(Direction.East);
+            if ((int)coordinate.Z == ChunkDepth - 1 && !directions.Contains(Direction.North))
+                directions.Add(Direction.North);
+            if ((int)coordinate.Z == 0 && !directions.Contains(Direction.South))
+                directions.Add(Direction.South);
+            
             return directions;
         }
 
-        /// <summary>
-        /// Returns the number of vertices in the current chunk.
-        /// </summary>
-        /// <returns></returns>
-        public int GetVerticeCount()
-        {
-            int nonAirBlocks = 0;
-            
-            for (int x = 0; x < ChunkWidth; x++)
-            {
-                for (int y = 0; y < ChunkHeight; y++)
-                {
-                    for (int z = 0; z < ChunkDepth; z++)
-                    {
-                        if (Blocks[x, y, z] != (int)BlockType.Air)
-                            nonAirBlocks += BlockMesh.IndiceCount; //8 * 4, vertices per face
-                    }
-                }
-            }
-
-            return nonAirBlocks;
-        }
-        
         public (Vector3[] vertices, int[] indices, Vector3[] colors) GenerateMeshData()
         {
             List<Vector3> vertices = new List<Vector3>();
@@ -184,20 +178,24 @@ namespace Cube_Game
                         //Don't hand back mesh data for air blocks.
                         if (Blocks[x, y, z] != (int) BlockType.Air)
                         {
-                            int indCount = 0;
+                            int usedFaceCount = 0;
                             
                             vertices.AddRange(BlockMesh.GetAllVertices(new Vector3(x, y, z)).ToList());
                             //Add the indices while maintaining proper order via an offset.
-                            indices.AddRange(BlockMesh.GetCulledIndices(SidesExposedToAir(new Vector3(x, y, z)), out indCount, vertCount).ToList());
+                            indices.AddRange(BlockMesh.GetCulledIndices(SidesExposedToAir(new Vector3(x, y, z)), out usedFaceCount, vertCount).ToList());
+                            
                             colors.AddRange(BlockMesh.GetColorData().ToList());
         
                             vertCount += BlockMesh.VertCount;
-                            indiceCount += indCount;
+                            indiceCount += usedFaceCount * 6;
                         }
                     }
                 }
             }
-        
+
+            UsedVerticeCount = vertCount;
+            UsedIndiceCount = indiceCount;
+            
             return (vertices.ToArray(), indices.ToArray(), colors.ToArray());
         }
     }

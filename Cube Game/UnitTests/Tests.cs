@@ -12,7 +12,7 @@ namespace UnitTests
         [Test]
         public void GetCulledIndices_Test()
         {
-            List<Direction> directions = new List<Direction> {Direction.Above, Direction.Right, Direction.Left};
+            List<Direction> directions = new List<Direction> {Direction.Above, Direction.East, Direction.West};
             int usedVerticeCount;
             int[] result = BlockMesh.GetCulledIndices(directions, out usedVerticeCount);
             
@@ -23,7 +23,7 @@ namespace UnitTests
                 0, 2, 1, 0, 3, 2 //Left
             });
             
-            Assert.AreEqual(usedVerticeCount, 18);
+            Assert.AreEqual(18, usedVerticeCount);
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace UnitTests
             Chunk chunk = new Chunk();
             Vector3 coordinate = new Vector3(20, 15, 15);
             
-            Assert.AreEqual(chunk.VerifyCoordinate(coordinate), false);
+            Assert.AreEqual(false, chunk.VerifyCoordinate(coordinate));
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace UnitTests
 
             var result = chunk.SidesExposedToAir(new Vector3(5, 5, 5));
             
-            Assert.AreEqual(result, new Direction[] {Direction.Left, Direction.Front, Direction.Behind});
+            Assert.AreEqual(new Direction[] {Direction.West, Direction.North, Direction.South}, result);
         }
         
         [Test] //Testing the corner of the chunk in this case
@@ -55,9 +55,20 @@ namespace UnitTests
             Chunk chunk = new Chunk();
             chunk.SetBlock(new Vector3(0, 0, 0), BlockType.Dirt); //base
 
-            var result = chunk.SidesExposedToAir(new Vector3(0, 0, 0));
+            var result = chunk.SidesExposedToAir(new Vector3(0, 0, 0)).ToArray();
             
-            Assert.AreEqual(result, new Direction[] {Direction.Above, Direction.Right, Direction.Front});
+            Assert.AreEqual(new Direction[] {Direction.Above, Direction.East, Direction.North}, result);
+        }
+        
+        [Test] //Testing the corner of the chunk in this case
+        public void SidesExposedToAir_Block_Surrounded_By_Dirt_Test()
+        {
+            Chunk chunk = new Chunk();
+            chunk.FillUpToY(64, BlockType.Dirt);
+
+            var result = chunk.SidesExposedToAir(new Vector3(8, 8, 8));
+            
+            Assert.AreEqual(new Direction[] {}, result);
         }
 
         [Test]
@@ -66,7 +77,7 @@ namespace UnitTests
             //offset 5 blocks to the right, 1 up, 1 in.
             var result = BlockMesh.GetAllVertices(new Vector3(5, 1, 1)); 
             
-            Assert.AreEqual(result, new Vector3[]
+            Assert.AreEqual(new Vector3[]
             {
                 new Vector3(4.5f, 0.5f,  0.5f), //Left Bottom Back
                 new Vector3(5.5f, 0.5f,  0.5f), //Right Bottom Back
@@ -76,16 +87,17 @@ namespace UnitTests
                 new Vector3(5.5f, 0.5f,  1.5f), //Right Bottom Front
                 new Vector3(5.5f, 1.5f,  1.5f), //Right Top Front
                 new Vector3(4.5f, 1.5f,  1.5f), //Left Top Front
-            });
+            },result);
         }
         
-        [Test]
-        public void GetVerticeCount_Test()
-        {
-            Chunk chunk = new Chunk();
-            chunk.FillUpToY(1, BlockType.Dirt);
-            
-            Assert.AreEqual(chunk.GetVerticeCount(), 9216); //16 blocks * 16 blocks * 36 indices per block.
-        }
+        // [Test]
+        // public void GetVerticeCount_Test()
+        // {
+        //     Chunk chunk = new Chunk();
+        //     chunk.FillUpToY(1, BlockType.Dirt);
+        //     chunk.GenerateMeshData();
+        //     
+        //     Assert.AreEqual(9216 ,chunk.UsedVerticeCount); //16 blocks * 16 blocks * 36 indices per block.
+        // }
     }
 }

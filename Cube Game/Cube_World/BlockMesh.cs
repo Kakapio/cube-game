@@ -22,7 +22,7 @@ namespace Cube_Game
                 new Vector3(-0.5f, -0.5f,  -0.5f), //Left Bottom Back
                 new Vector3(0.5f, -0.5f,  -0.5f), //Right Bottom Back
                 new Vector3(0.5f, 0.5f,  -0.5f), //Right Top Back
-                new Vector3(-0.5f, 0.5f,  -0.5f), //Left Top Back - One face is completed!
+                new Vector3(-0.5f, 0.5f,  -0.5f), //Left Top Back
                 new Vector3(-0.5f, -0.5f,  0.5f), //Left Bottom Front
                 new Vector3(0.5f, -0.5f,  0.5f), //Right Bottom Front
                 new Vector3(0.5f, 0.5f,  0.5f), //Right Top Front
@@ -49,24 +49,18 @@ namespace Cube_Game
         {
             int[] indices = 
             {
-                //left
-                0, 2, 1,
-                0, 3, 2,
-                //back
-                1, 2, 6,
-                6, 5, 1,
-                //right
-                4, 5, 6,
-                6, 7, 4,
-                //top
-                2, 3, 6,
-                6, 3, 7,
-                //front
-                0, 7, 3,
-                0, 4, 7,
-                //bottom
-                0, 1, 5,
-                0, 5, 4
+                //west
+                3, 7, 0, 7, 4, 0,
+                //south
+                0, 2, 1, 0, 3, 2,
+                //east
+                1, 2, 6, 6, 5, 1,
+                //above
+                2, 3, 6, 6, 3, 7,
+                //north
+                4, 5, 6, 6, 7, 4,
+                //below
+                0, 1, 5, 0, 5, 4
             };
             
             if (offset != 0)
@@ -84,17 +78,24 @@ namespace Cube_Game
         /// Generate a cube's indices given the sides that are to be rendered.
         /// </summary>
         /// <param name="directions"></param>
-        /// <param name="usedIndiceCount"></param>
+        /// <param name="usedFaceCount"></param>
         /// <param name="offset"></param>
         /// <returns></returns>
-        public static int[] GetCulledIndices(List<Direction> directions, out int usedIndiceCount, int offset = 0)
+        public static int[] GetCulledIndices(List<Direction> directions, out int usedFaceCount, int offset = 0)
         {
-            int[] leftIndices = {0, 2, 1, 0, 3, 2};
-            int[] behindIndices = {1, 2, 6, 6, 5, 1};
-            int[] rightIndices = {4, 5, 6, 6, 7, 4};
+            int[] westIndices = {3, 7, 0, 7, 4, 0};
+            int[] southIndices = {0, 2, 1, 0, 3, 2};
+            int[] eastIndices = {1, 2, 6, 6, 5, 1};
+            int[] northIndices = {4, 5, 6, 6, 7, 4};
             int[] aboveIndices = {2, 3, 6, 6, 3, 7};
-            int[] frontIndices = {0, 7, 3, 0, 4, 7};
             int[] belowIndices = {0, 1, 5, 0, 5, 4};
+            
+            // int[] westIndices = {0, 7, 3, 0, 4, 7};
+            // int[] southIndices = {0, 2, 1, 0, 3, 2};
+            // int[] eastIndices = {1, 2, 6, 6, 5, 1};
+            // int[] northIndices = {4, 5, 6, 6, 7, 4};
+            // int[] aboveIndices = {2, 3, 6, 6, 3, 7};
+            // int[] belowIndices = {0, 1, 5, 0, 5, 4};
 
             List<int> culledIndices = new List<int>();
 
@@ -103,23 +104,23 @@ namespace Cube_Game
             {
                 switch (direction)
                 {
-                    case Direction.Left:
-                        culledIndices.AddRange(leftIndices);
-                        break;
-                    case Direction.Behind:
-                        culledIndices.AddRange(behindIndices);
-                        break;
-                    case Direction.Right:
-                        culledIndices.AddRange(rightIndices);
-                        break;
                     case Direction.Above:
                         culledIndices.AddRange(aboveIndices);
                         break;
-                    case Direction.Front:
-                        culledIndices.AddRange(frontIndices);
-                        break;
                     case Direction.Below:
                         culledIndices.AddRange(belowIndices);
+                        break;
+                    case Direction.West:
+                        culledIndices.AddRange(westIndices);
+                        break;
+                    case Direction.East:
+                        culledIndices.AddRange(eastIndices);
+                        break;
+                    case Direction.North:
+                        culledIndices.AddRange(northIndices);
+                        break;
+                    case Direction.South:
+                        culledIndices.AddRange(southIndices);
                         break;
                 }
             }
@@ -132,19 +133,9 @@ namespace Cube_Game
                 }
             }
 
-            usedIndiceCount = directions.Count * 6; //Each face has 6 indices.
+            usedFaceCount = directions.Count * 6; //Each face has 6 indices.
             return culledIndices.ToArray();
         }
-        
-        // public static int[] GetCulledVertices (List<Direction> directions, out int usedIndiceCount, int offset = 0)
-        // {
-        //     int[] leftVertices = {0, 2, 1, 0, 3, 2};
-        //     int[] behindVertices = {1, 2, 6, 6, 5, 1};
-        //     int[] rightVertices = {4, 5, 6, 6, 7, 4};
-        //     int[] aboveVertices = {2, 3, 6, 6, 3, 7};
-        //     int[] frontVertices = {0, 7, 3, 0, 4, 7};
-        //     int[] belowVertices = {0, 1, 5, 0, 5, 4};
-        // }
 
         public static Vector3[] GetColorData()
         {
@@ -166,5 +157,6 @@ namespace Cube_Game
             return Matrix4.CreateScale(scale) * Matrix4.CreateRotationX(0) * Matrix4.CreateRotationY(0) * 
                    Matrix4.CreateRotationZ(0) * Matrix4.CreateTranslation(position);
         }
+
     }
 }

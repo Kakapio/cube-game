@@ -83,20 +83,13 @@ namespace Cube_Game
         /// <returns></returns>
         public static int[] GetCulledIndices(List<Direction> directions, out int usedFaceCount, int offset = 0)
         {
-            int[] westIndices = {3, 7, 0, 7, 4, 0};
-            int[] southIndices = {0, 2, 1, 0, 3, 2};
+            int[] westIndices = {0, 4, 7, 7, 3, 0};
+            int[] southIndices = {1, 0, 3, 3, 2, 1};
             int[] eastIndices = {1, 2, 6, 6, 5, 1};
             int[] northIndices = {4, 5, 6, 6, 7, 4};
-            int[] aboveIndices = {2, 3, 6, 6, 3, 7};
-            int[] belowIndices = {0, 1, 5, 0, 5, 4};
+            int[] aboveIndices = {6, 2, 3, 3, 7, 6};
+            int[] belowIndices = {0, 1, 5, 5, 4, 0};
             
-            // int[] westIndices = {0, 7, 3, 0, 4, 7};
-            // int[] southIndices = {0, 2, 1, 0, 3, 2};
-            // int[] eastIndices = {1, 2, 6, 6, 5, 1};
-            // int[] northIndices = {4, 5, 6, 6, 7, 4};
-            // int[] aboveIndices = {2, 3, 6, 6, 3, 7};
-            // int[] belowIndices = {0, 1, 5, 0, 5, 4};
-
             List<int> culledIndices = new List<int>();
 
             //Add all the requested directions to a temporary list.
@@ -157,6 +150,5 @@ namespace Cube_Game
             return Matrix4.CreateScale(scale) * Matrix4.CreateRotationX(0) * Matrix4.CreateRotationY(0) * 
                    Matrix4.CreateRotationZ(0) * Matrix4.CreateTranslation(position);
         }
-
     }
 }

@@ -56,6 +56,8 @@ namespace Cube_Game
                     }
                 }
             }
+
+            HasChanged = true;
         }
 
         /// <summary>
@@ -67,6 +69,7 @@ namespace Cube_Game
             if (VerifyCoordinate(coordinate))
             {
                 Blocks[(int)coordinate.X, (int)coordinate.Y, (int)coordinate.Z] = (int)block;
+                HasChanged = true;
             }
         }
         

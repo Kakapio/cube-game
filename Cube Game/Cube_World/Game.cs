@@ -15,7 +15,6 @@ namespace Cube_Game
         private Chunk chunk = new Chunk();
         
         private Vector2 lastMousePos;
-        private const float CubeScale = 1f;
         private string activeShader = "default";
         private int iboElements;
 
@@ -34,10 +33,10 @@ namespace Cube_Game
             
             shaders.Add("default", new ShaderProgram("shader.vert", "shader.frag", true));
             
-            chunk.FillUpToY(128, BlockType.Dirt);
+            chunk.FillUpToY(15, BlockType.Dirt);
             chunk.SetBlock(new Vector3(5, 15, 0), BlockType.Dirt);
-            chunk.SetBlock(new Vector3(5, 0, 8), BlockType.Air);
-            chunk.SetBlock(new Vector3(5, 0, 9), BlockType.Air);
+            chunk.SetBlock(new Vector3(5, 14, 8), BlockType.Air);
+            chunk.SetBlock(new Vector3(5, 14, 9), BlockType.Air);
             
             lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
             CursorVisible = false;
@@ -49,7 +48,7 @@ namespace Cube_Game
 
             Initialize();
             GL.Enable(EnableCap.DepthTest);
-            //GL.Enable(EnableCap.CullFace);
+            GL.Enable(EnableCap.CullFace);
             GL.ClearColor(0.047f, 0.474f, 0.811f, 1.0f);
         }
 
@@ -60,29 +59,29 @@ namespace Cube_Game
             ProcessInput((float)e.Time);
             camera.UpdateViewProjectionMatrix();
 
+            //Only re-mesh chunk data and send it to the GPU when the chunk has changed.
             if (chunk.HasChanged)
             {
                 (vertData, indiceData, colorData) = chunk.GenerateMeshData();
-                chunk.HasChanged = false;
-            }
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vPosition"));
+                
+                GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vPosition"));
  
-            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertData.Length * Vector3.SizeInBytes), vertData, BufferUsageHint.DynamicDraw);
-            GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
- 
-            if (shaders[activeShader].GetAttribute("vColor") != -1)
-            {
-                GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vColor"));
-                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(colorData.Length * Vector3.SizeInBytes), colorData, BufferUsageHint.DynamicDraw);
-                GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
-            }
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertData.Length * Vector3.SizeInBytes), vertData, BufferUsageHint.DynamicDraw);
+                GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
+                
+                if (shaders[activeShader].GetAttribute("vColor") != -1)
+                {
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vColor"));
+                    GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(colorData.Length * Vector3.SizeInBytes), colorData, BufferUsageHint.DynamicDraw);
+                    GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
+                }
             
-            GL.UseProgram(shaders[activeShader].ProgramID);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                GL.UseProgram(shaders[activeShader].ProgramID);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, iboElements);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indiceData.Length * sizeof(int)), indiceData, BufferUsageHint.StaticDraw);
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, iboElements);
+                GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indiceData.Length * sizeof(int)), indiceData, BufferUsageHint.StaticDraw);
+            }
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)

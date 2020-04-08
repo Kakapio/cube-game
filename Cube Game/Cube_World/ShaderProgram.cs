@@ -14,9 +14,9 @@ namespace Cube_Game
         public int AttributeCount = 0;
         public int UniformCount = 0;
  
-        public Dictionary<String, AttributeInfo> Attributes = new Dictionary<string, AttributeInfo>();
-        public Dictionary<String, UniformInfo> Uniforms = new Dictionary<string, UniformInfo>();
-        public Dictionary<String, uint> Buffers = new Dictionary<string, uint>();
+        private Dictionary<String, AttributeInfo> attributes = new Dictionary<string, AttributeInfo>();
+        private Dictionary<String, UniformInfo> uniforms = new Dictionary<string, UniformInfo>();
+        private Dictionary<String, uint> buffers = new Dictionary<string, uint>();
         
         public ShaderProgram()
         {
@@ -98,7 +98,7 @@ namespace Cube_Game
  
                 info.name = name;
                 info.address = GL.GetAttribLocation(ProgramID, info.name);
-                Attributes.Add(name, info);
+                attributes.Add(name, info);
             }
  
             for (int i = 0; i < UniformCount; i++)
@@ -111,80 +111,74 @@ namespace Cube_Game
                 GL.GetActiveUniform(ProgramID, i, 256, out length, out info.size, out info.type, out name);
                 
                 info.name = name;
-                Uniforms.Add(name, info);
+                uniforms.Add(name, info);
                 info.address = GL.GetUniformLocation(ProgramID, info.name);
             }
         }
         
         public void GenBuffers()
         {
-            for (int i = 0; i < Attributes.Count; i++)
+            for (int i = 0; i < attributes.Count; i++)
             {
                 uint buffer = 0;
                 GL.GenBuffers(1, out buffer);
  
-                Buffers.Add(Attributes.Values.ElementAt(i).name, buffer);
+                buffers.Add(attributes.Values.ElementAt(i).name, buffer);
             }
  
-            for (int i = 0; i < Uniforms.Count; i++)
+            for (int i = 0; i < uniforms.Count; i++)
             {
                 uint buffer = 0;
                 GL.GenBuffers(1, out buffer);
  
-                Buffers.Add(Uniforms.Values.ElementAt(i).name, buffer);
+                buffers.Add(uniforms.Values.ElementAt(i).name, buffer);
             }
         }
         
         public void EnableVertexAttribArrays()
         {
-            for (int i = 0; i < Attributes.Count; i++)
+            for (int i = 0; i < attributes.Count; i++)
             {
-                GL.EnableVertexAttribArray(Attributes.Values.ElementAt(i).address);
+                GL.EnableVertexAttribArray(attributes.Values.ElementAt(i).address);
             }
         }
  
         public void DisableVertexAttribArrays()
         {
-            for (int i = 0; i < Attributes.Count; i++)
+            for (int i = 0; i < attributes.Count; i++)
             {
-                GL.DisableVertexAttribArray(Attributes.Values.ElementAt(i).address);
+                GL.DisableVertexAttribArray(attributes.Values.ElementAt(i).address);
             }
         }
         
         public int GetAttribute(string name)
         {
-            if (Attributes.ContainsKey(name))
+            if (attributes.ContainsKey(name))
             {
-                return Attributes[name].address;
+                return attributes[name].address;
             }
             else
-            {
                 return -1;
-            }
         }
  
         public int GetUniform(string name)
         {
-            if (Uniforms.ContainsKey(name))
+            if (uniforms.ContainsKey(name))
             {
-                return Uniforms[name].address;
+                return uniforms[name].address;
             }
             else
-            {
                 return -1;
-            }
         }
  
         public uint GetBuffer(string name)
         {
-            if (Buffers.ContainsKey(name))
+            if (buffers.ContainsKey(name))
             {
-                return Buffers[name];
+                return buffers[name];
             }
             else
-            {
                 return 0;
-            }
         }
     }
     

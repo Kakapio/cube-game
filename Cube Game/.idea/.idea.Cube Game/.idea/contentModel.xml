@@ -22,6 +22,8 @@
         <e p="shader.frag" t="Include" />
         <e p="shader.vert" t="Include" />
         <e p="ShaderProgram.cs" t="Include" />
+        <e p="Textures.cs" t="Include" />
+        <e p="World.cs" t="Include" />
       </e>
       <e p="packages" t="ExcludeRecursive" />
       <e p="UnitTests" t="IncludeRecursive">

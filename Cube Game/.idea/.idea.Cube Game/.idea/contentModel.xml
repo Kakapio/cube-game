@@ -8,22 +8,29 @@
       <e p="Cube_World" t="IncludeRecursive">
         <e p="App.config" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
-        <e p="BlockMesh.cs" t="Include" />
-        <e p="BlockType.cs" t="Include" />
-        <e p="Camera.cs" t="Include" />
-        <e p="Chunk.cs" t="Include" />
         <e p="Cube Game.csproj" t="IncludeRecursive" />
-        <e p="Direction.cs" t="Include" />
+        <e p="fs_tex.glsl" t="Include" />
         <e p="Game.cs" t="Include" />
+        <e p="GameData" t="Include">
+          <e p="BlockType.cs" t="Include" />
+          <e p="Chunk.cs" t="Include" />
+          <e p="Direction.cs" t="Include" />
+          <e p="World.cs" t="Include" />
+        </e>
+        <e p="InvalidInputException.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive" />
         <e p="OpenTK.dll.config" t="Include" />
         <e p="packages.config" t="Include" />
         <e p="Program.cs" t="Include" />
+        <e p="Rendering" t="Include">
+          <e p="BlockMesh.cs" t="Include" />
+          <e p="Camera.cs" t="Include" />
+          <e p="ShaderProgram.cs" t="Include" />
+          <e p="Textures.cs" t="Include" />
+        </e>
         <e p="shader.frag" t="Include" />
         <e p="shader.vert" t="Include" />
-        <e p="ShaderProgram.cs" t="Include" />
-        <e p="Textures.cs" t="Include" />
-        <e p="World.cs" t="Include" />
+        <e p="vs_tex.glsl" t="Include" />
       </e>
       <e p="packages" t="ExcludeRecursive" />
       <e p="UnitTests" t="IncludeRecursive">

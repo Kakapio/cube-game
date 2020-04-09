@@ -13,6 +13,7 @@ namespace Cube_Game
         private Camera camera;
         private Dictionary<string, ShaderProgram> shaders = new Dictionary<string, ShaderProgram>();
         private Chunk chunk = new Chunk();
+        private Textures textures = new Textures();
         
         private Vector2 lastMousePos;
         private string activeShader = "default";
@@ -21,6 +22,7 @@ namespace Cube_Game
         private Vector3[] vertData;
         private int[] indiceData;
         private Vector3[] colorData;
+        private Vector2[] texCoordData;
 
         public Game (int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
         {
@@ -32,6 +34,7 @@ namespace Cube_Game
             GL.GenBuffers(1, out iboElements);
             
             shaders.Add("default", new ShaderProgram("shader.vert", "shader.frag", true));
+            shaders.Add("textured", new ShaderProgram("vs_tex.glsl", "fs_tex.glsl", true));
             
             chunk.FillUpToY(15, BlockType.Dirt);
             chunk.SetBlock(new Vector3(5, 15, 0), BlockType.Dirt);

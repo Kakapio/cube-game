@@ -27,9 +27,9 @@ namespace Cube_Game
             Blocks = new int[ChunkWidth, ChunkHeight, ChunkDepth];
 
             //Set every block to Air to start with.
-            for (int x = 0; x < ChunkWidth; x++) //Iterate through all X-values
+            for (int x = 0; x < ChunkWidth; x++)
             {
-                for (int y = 0; y < ChunkHeight; y++) //Iterate through each Y-value connected to every X-value
+                for (int y = 0; y < ChunkHeight; y++)
                 {
                     for (int z = 0; z < ChunkDepth; z++)
                     {
@@ -85,7 +85,7 @@ namespace Cube_Game
                 return Blocks[(int) coordinate.X, (int) coordinate.Y, (int) coordinate.Z];
             }
             else
-                throw new InvalidDataException("Coordinates were invalid!");
+                throw new InvalidInputException("Coordinates were invalid!");
         }
 
         /// <summary>
@@ -111,9 +111,9 @@ namespace Cube_Game
         public List<Direction> SidesExposedToAir(Vector3 coordinate)
         {
             if (VerifyCoordinate(coordinate) == false)
-                throw new InvalidDataException("Coordinates were invalid!");
+                throw new InvalidInputException("Coordinates were invalid!");
             if (GetBlock(coordinate) == (int)BlockType.Air)
-                throw new InvalidDataException("Block at given coordinate is an air block!");
+                throw new InvalidInputException("Block at given coordinate is an air block!");
             
             List<Direction> directions = new List<Direction>();
             Vector3 above, below, west, east, north, south;

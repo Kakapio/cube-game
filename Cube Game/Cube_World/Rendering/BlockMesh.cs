@@ -10,6 +10,7 @@ namespace Cube_Game
         public const int VertCount = 8;
         public const int IndiceCount = 36;
         public const int ColorDataCount = 8;
+        public const int TextureCoordsCount = 24;
 
         /// <summary>
         /// Returns all the vertices of a cube.
@@ -50,17 +51,17 @@ namespace Cube_Game
             int[] indices = 
             {
                 //west
-                3, 7, 0, 7, 4, 0,
+                0, 4, 7, 7, 3, 0,
                 //south
-                0, 2, 1, 0, 3, 2,
+                1, 0, 3, 3, 2, 1,
                 //east
                 1, 2, 6, 6, 5, 1,
                 //above
-                2, 3, 6, 6, 3, 7,
+                6, 2, 3, 3, 7, 6,
                 //north
                 4, 5, 6, 6, 7, 4,
                 //below
-                0, 1, 5, 0, 5, 4
+                0, 1, 5, 5, 4, 0
             };
             
             if (offset != 0)
@@ -149,6 +150,47 @@ namespace Cube_Game
         {
             return Matrix4.CreateScale(scale) * Matrix4.CreateRotationX(0) * Matrix4.CreateRotationY(0) * 
                    Matrix4.CreateRotationZ(0) * Matrix4.CreateTranslation(position);
+        }
+
+        public static Vector2[] GetTextureCoords()
+        {
+            return new Vector2[] {
+                // left
+                new Vector2(0.0f, 0.0f),
+                new Vector2(-1.0f, 1.0f),
+                new Vector2(-1.0f, 0.0f),
+                new Vector2(0.0f, 1.0f),
+ 
+                // back
+                new Vector2(0.0f, 0.0f),
+                new Vector2(0.0f, 1.0f),
+                new Vector2(-1.0f, 1.0f),
+                new Vector2(-1.0f, 0.0f),
+ 
+                // right
+                new Vector2(-1.0f, 0.0f),
+                new Vector2(0.0f, 0.0f),
+                new Vector2(0.0f, 1.0f),
+                new Vector2(-1.0f, 1.0f),
+ 
+                // top
+                new Vector2(0.0f, 0.0f),
+                new Vector2(0.0f, 1.0f),
+                new Vector2(-1.0f, 0.0f),
+                new Vector2(-1.0f, 1.0f),
+ 
+                // front
+                new Vector2(0.0f, 0.0f),
+                new Vector2(1.0f, 1.0f),
+                new Vector2(0.0f, 1.0f),
+                new Vector2(1.0f, 0.0f),
+ 
+                // bottom
+                new Vector2(0.0f, 0.0f),
+                new Vector2(0.0f, 1.0f),
+                new Vector2(-1.0f, 1.0f),
+                new Vector2(-1.0f, 0.0f)
+            };
         }
     }
 }

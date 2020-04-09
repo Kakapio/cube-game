@@ -14,16 +14,16 @@ namespace Cube_Game
         public Textures()
         {
         }
-
+        
         /// <summary>
         /// Loads the image at the given address into the GPU, generates mipmaps, and stores the texture in a dictionary via name.
         /// </summary>
         /// <param name="fileAddress"></param>
-        /// <param name="imageName"></param>
-        private void LoadImage(string fileAddress, string imageName)
+        /// <param name="name"></param>
+        private void LoadImage(string fileAddress, string name)
         {
             Bitmap file = new Bitmap(fileAddress);
-            LoadImage(file, imageName);
+            LoadImage(file, name);
         }
         
         /// <summary>
@@ -47,6 +47,16 @@ namespace Cube_Game
  
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
  
+        }
+
+        public int GetTexture(string name)
+        {
+            if (textures.ContainsKey(name))
+                return textures[name];
+            else
+            {
+                throw new InvalidInputException("Inputted name does not exist in currently stored textures!");
+            }
         }
     }
 }

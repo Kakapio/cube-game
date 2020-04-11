@@ -7,34 +7,40 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace Cube_Game
 {
-    public class Textures
+    public static class Textures
     {
-        private Dictionary<string, int> textures = new Dictionary<string, int>();
+        private static Dictionary<string, int> textures = new Dictionary<string, int>();
+        private static string currentDirectory;
 
-        public Textures()
+        static Textures()
         {
+            currentDirectory = Directory.GetCurrentDirectory();
+            
+            LoadImage(currentDirectory + @"\Textures\Grass_Side.png", "grass_side");
+            LoadImage(currentDirectory + @"\Textures\Grass_Top.png", "grass_top");
+            LoadImage(currentDirectory + @"\Textures\Grass_Bottom.png", "grass_bottom");
         }
         
         /// <summary>
         /// Loads the image at the given address into the GPU, generates mipmaps, and stores the texture in a dictionary via name.
         /// </summary>
         /// <param name="fileAddress"></param>
-        /// <param name="name"></param>
-        private void LoadImage(string fileAddress, string name)
+        /// <param name="textureName"></param>
+        private static void LoadImage(string fileAddress, string textureName)
         {
             Bitmap file = new Bitmap(fileAddress);
-            LoadImage(file, name);
+            LoadImage(file, textureName);
         }
         
         /// <summary>
         /// Loads the given image into the GPU, generates mipmaps, and stores the texture in a dictionary via name.
         /// </summary>
         /// <param name="image"></param>
-        /// <param name="name"></param>
-        private void LoadImage(Bitmap image, string name)
+        /// <param name="textureName"></param>
+        private static void LoadImage(Bitmap image, string textureName)
         {
             int texID = GL.GenTexture();
-            textures.Add(name, texID);
+            textures.Add(textureName, texID);
  
             GL.BindTexture(TextureTarget.Texture2D, texID);
             BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
@@ -49,7 +55,7 @@ namespace Cube_Game
  
         }
 
-        public int GetTexture(string name)
+        public static int GetTexture(string name)
         {
             if (textures.ContainsKey(name))
                 return textures[name];

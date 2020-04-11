@@ -30,6 +30,11 @@
         </e>
         <e p="shader.frag" t="Include" />
         <e p="shader.vert" t="Include" />
+        <e p="Textures" t="Include">
+          <e p="Grass_Bottom.png" t="Include" />
+          <e p="Grass_Side.png" t="Include" />
+          <e p="Grass_Top.png" t="Include" />
+        </e>
         <e p="vs_tex.glsl" t="Include" />
       </e>
       <e p="packages" t="ExcludeRecursive" />

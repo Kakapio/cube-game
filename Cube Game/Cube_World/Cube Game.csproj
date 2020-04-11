@@ -71,6 +71,9 @@
     <Content Include="fs_tex.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Textures\Grass_Bottom.png" />
+    <Content Include="Textures\Grass_Side.png" />
+    <Content Include="Textures\Grass_Top.png" />
     <Content Include="vs_tex.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

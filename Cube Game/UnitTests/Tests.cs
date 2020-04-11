@@ -18,9 +18,9 @@ namespace UnitTests
             
             Assert.AreEqual(result, new []
             {
-                2, 3, 6, 6, 3, 7, //Above
-                4, 5, 6, 6, 7, 4, //Right
-                0, 2, 1, 0, 3, 2 //Left
+                6, 2, 3, 3, 7, 6, //Above
+                1, 2, 6, 6, 5, 1, //East
+                0, 2, 1, 0, 3, 2 //West
             });
             
             Assert.AreEqual(18, usedVerticeCount);
@@ -57,7 +57,7 @@ namespace UnitTests
 
             var result = chunk.SidesExposedToAir(new Vector3(0, 0, 0)).ToArray();
             
-            Assert.AreEqual(new Direction[] {Direction.Above, Direction.East, Direction.North}, result);
+            Assert.AreEqual(new Direction[] {Direction.Above, Direction.East, Direction.North, Direction.Below, Direction.West, Direction.South}, result);
         }
         
         [Test] //Testing the corner of the chunk in this case

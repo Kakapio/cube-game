@@ -154,7 +154,8 @@ namespace Cube_Game
 
         public static Vector2[] GetTextureCoords()
         {
-            return new Vector2[] {
+            return new Vector2[] 
+            {
                 // left
                 new Vector2(0.0f, 0.0f),
                 new Vector2(-1.0f, 1.0f),

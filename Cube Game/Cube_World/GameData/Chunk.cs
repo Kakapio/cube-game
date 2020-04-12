@@ -165,12 +165,11 @@ namespace Cube_Game
             return directions;
         }
 
-        public (Vector3[] vertices, int[] indices, Vector3[] colors, Vector2[] texCoords) GenerateMeshData()
+        public (Vector3[] vertices, int[] indices, Vector2[] texCoords) GenerateMeshData()
         {
             List<Vector3> vertices = new List<Vector3>();
             List<int> indices = new List<int>();
-            List<Vector3> colors = new List<Vector3>();
-            List<Vector2> textures = new List<Vector2>();
+            List<Vector2> texCoords = new List<Vector2>();
         
             int vertCount = 0;
             int indiceCount = 0;
@@ -188,8 +187,7 @@ namespace Cube_Game
                             
                             vertices.AddRange(BlockMesh.GetAllVertices(new Vector3(x, y, z)).ToList());
                             indices.AddRange(BlockMesh.GetCulledIndices(SidesExposedToAir(new Vector3(x, y, z)), out usedFaceCount, vertCount).ToList());
-                            colors.AddRange(BlockMesh.GetColorData().ToList());
-                            textures.AddRange(BlockMesh.GetTextureCoords());
+                            texCoords.AddRange(BlockMesh.GetTextureCoords());
         
                             vertCount += BlockMesh.VertCount;
                             indiceCount += usedFaceCount * 6;
@@ -202,7 +200,7 @@ namespace Cube_Game
             UsedIndiceCount = indiceCount;
             HasChanged = false; //method was called, meaning the new data has been sent back out.
             
-            return (vertices.ToArray(), indices.ToArray(), colors.ToArray(), textures.ToArray());
+            return (vertices.ToArray(), indices.ToArray(), texCoords.ToArray());
         }
     }
 }

@@ -15,12 +15,11 @@ namespace Cube_Game
         private Chunk chunk = new Chunk();
         
         private Vector2 lastMousePos;
-        private string activeShader = "default";
+        private string activeShader = "textured";
         private int iboElements;
 
         private Vector3[] vertData;
         private int[] indiceData;
-        private Vector3[] colorData;
         private Vector2[] texCoordData;
 
         public Game (int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
@@ -56,38 +55,34 @@ namespace Cube_Game
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
-            
-            ProcessInput((float)e.Time);
+
+            ProcessInput((float) e.Time);
             camera.UpdateViewProjectionMatrix();
 
             //Only re-mesh chunk data and send it to the GPU when the chunk has changed.
             if (chunk.HasChanged)
             {
-                (vertData, indiceData, colorData, texCoordData) = chunk.GenerateMeshData();
-                
+                (vertData, indiceData, texCoordData) = chunk.GenerateMeshData();
+
                 GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vPosition"));
-                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertData.Length * Vector3.SizeInBytes), vertData, BufferUsageHint.DynamicDraw);
-                GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
-                
-                if (shaders[activeShader].GetAttribute("vColor") != -1)
-                {
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vColor"));
-                    GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(colorData.Length * Vector3.SizeInBytes), colorData, BufferUsageHint.DynamicDraw);
-                    GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
-                }
-                
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr) (vertData.Length * Vector3.SizeInBytes), vertData,
+                    BufferUsageHint.DynamicDraw);
+                GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vPosition"), 3,
+                    VertexAttribPointerType.Float, false, 0, 0);
+
                 if (shaders[activeShader].GetAttribute("texcoord") != -1)
                 {
                     GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("texcoord"));
                     GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(texCoordData.Length * Vector2.SizeInBytes), texCoordData, BufferUsageHint.StaticDraw);
                     GL.VertexAttribPointer(shaders[activeShader].GetAttribute("texcoord"), 2, VertexAttribPointerType.Float, true, 0, 0);
                 }
-            
+
                 GL.UseProgram(shaders[activeShader].ProgramID);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, iboElements);
-                GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indiceData.Length * sizeof(int)), indiceData, BufferUsageHint.StaticDraw);
+                GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr) (indiceData.Length * sizeof(int)), indiceData,
+                    BufferUsageHint.StaticDraw);
             }
         }
 
@@ -99,21 +94,18 @@ namespace Cube_Game
 
             shaders[activeShader].EnableVertexAttribArrays();
             
-            Matrix4 modelViewProjection = camera.ViewProjectionMatrix;
-                            
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, Textures.GetTexture("grass_side"));
-            GL.UniformMatrix4(shaders[activeShader].GetUniform("modelview"), false, ref modelViewProjection);
             
-            if (shaders[activeShader].GetUniform("maintexture") != -1)
-            {
-                GL.Uniform1(shaders[activeShader].GetUniform("maintexture"), 0);
-            }
+            Matrix4 modelViewProjection = camera.ViewProjectionMatrix;
+            GL.UniformMatrix4(shaders[activeShader].GetUniform("modelView"), false, ref modelViewProjection);
+            
+            if (shaders[activeShader].GetUniform("mainTexture") != -1)
+                GL.Uniform1(shaders[activeShader].GetUniform("mainTexture"), 0);
             
             GL.DrawElements(BeginMode.Triangles, chunk.UsedIndiceCount, DrawElementsType.UnsignedInt, 0);
             
             shaders[activeShader].DisableVertexAttribArrays();
-
             GL.Flush();
             Context.SwapBuffers();
         }
@@ -125,7 +117,7 @@ namespace Cube_Game
             lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y); 
         }
 
-        void ProcessInput(float deltaTime)
+        private void ProcessInput(float deltaTime)
         {
             KeyboardState input = Keyboard.GetState();
 

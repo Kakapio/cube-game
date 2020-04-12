@@ -41,6 +41,60 @@ namespace Cube_Game
             return vertices;
         }
         
+        public static Vector3[] GetCulledVertices(List<Direction> directions, out int usedVertexCount, int offset = 0)
+        {
+            int[] westVertices = {0, 4, 7, 7, 3, 0};
+            int[] southVertices = {1, 0, 3, 3, 2, 1};
+            int[] eastVertices = {1, 2, 6, 6, 5, 1};
+            int[] northVertices = {4, 5, 6, 6, 7, 4};
+            int[] aboveVertices = {6, 2, 3, 3, 7, 6};
+            int[] belowVertices = {0, 1, 5, 5, 4, 0};
+            
+            List<Vector3> culledVertices = new List<Vector3>();
+
+            // //Add all the requested directions to a temporary list.
+            // foreach (Direction direction in directions)
+            // {
+            //     switch (direction)
+            //     {
+            //         case Direction.Above:
+            //             culledVertices.AddRange(aboveVertices);
+            //             break;
+            //         case Direction.Below:
+            //             culledVertices.AddRange(belowVertices);
+            //             break;
+            //         case Direction.West:
+            //             culledVertices.AddRange(westVertices);
+            //             break;
+            //         case Direction.East:
+            //             culledVertices.AddRange(eastVertices);
+            //             break;
+            //         case Direction.North:
+            //             culledVertices.AddRange(northVertices);
+            //             break;
+            //         case Direction.South:
+            //             culledVertices.AddRange(southVertices);
+            //             break;
+            //     }
+            // }
+            //
+            // if (offset != 0)
+            // {
+            //     for (int i = 0; i < culledVertices.Count; i++)
+            //     {
+            //         culledVertices[i] += offset;
+            //     }
+            // }
+
+            usedVertexCount = directions.Count * 6; //Each face has 6 indices.
+            //return culledVertices.ToArray();
+            return new Vector3[]
+            {
+                
+            };
+        }
+
+        
         /// <summary>
         /// Returns all the indices of a cube.
         /// </summary>
@@ -156,41 +210,41 @@ namespace Cube_Game
         {
             return new Vector2[] 
             {
-                // left
-                new Vector2(0.0f, 0.0f),
-                new Vector2(-1.0f, 1.0f),
-                new Vector2(-1.0f, 0.0f),
-                new Vector2(0.0f, 1.0f),
- 
-                // back
-                new Vector2(0.0f, 0.0f),
-                new Vector2(0.0f, 1.0f),
-                new Vector2(-1.0f, 1.0f),
-                new Vector2(-1.0f, 0.0f),
- 
-                // right
+                // west
                 new Vector2(-1.0f, 0.0f),
                 new Vector2(0.0f, 0.0f),
                 new Vector2(0.0f, 1.0f),
                 new Vector2(-1.0f, 1.0f),
  
-                // top
-                new Vector2(0.0f, 0.0f),
-                new Vector2(0.0f, 1.0f),
+                // south
                 new Vector2(-1.0f, 0.0f),
-                new Vector2(-1.0f, 1.0f),
- 
-                // front
-                new Vector2(0.0f, 0.0f),
-                new Vector2(1.0f, 1.0f),
-                new Vector2(0.0f, 1.0f),
-                new Vector2(1.0f, 0.0f),
- 
-                // bottom
                 new Vector2(0.0f, 0.0f),
                 new Vector2(0.0f, 1.0f),
                 new Vector2(-1.0f, 1.0f),
-                new Vector2(-1.0f, 0.0f)
+ 
+                // east - only working texcoords
+                new Vector2(-1.0f, 0.0f),
+                new Vector2(0.0f, 0.0f),
+                new Vector2(0.0f, 1.0f),
+                new Vector2(-1.0f, 1.0f),
+ 
+                // above
+                new Vector2(-1.0f, 0.0f),
+                new Vector2(0.0f, 0.0f),
+                new Vector2(0.0f, 1.0f),
+                new Vector2(-1.0f, 1.0f),
+ 
+                // north
+                new Vector2(-1.0f, 0.0f),
+                new Vector2(0.0f, 0.0f),
+                new Vector2(0.0f, 1.0f),
+                new Vector2(-1.0f, 1.0f),
+ 
+                // below
+                new Vector2(-1.0f, 0.0f),
+                new Vector2(0.0f, 0.0f),
+                new Vector2(0.0f, 1.0f),
+                new Vector2(-1.0f, 1.0f)
             };
         }
     }

@@ -9,16 +9,19 @@ namespace Cube_Game
 {
     public static class Textures
     {
+        public const int NumberTexturesInAtlas = 1;
+        
         private static Dictionary<string, int> textures = new Dictionary<string, int>();
-        private static string currentDirectory;
+        private static string mainFolderDirectory;
 
         static Textures()
         {
-            currentDirectory = Directory.GetCurrentDirectory();
+            mainFolderDirectory = Directory.GetCurrentDirectory();
+            mainFolderDirectory = Path.GetFullPath(Path.Combine(mainFolderDirectory, @"..\..\"));
             
-            LoadImage(currentDirectory + @"\Textures\Grass_Side.png", "grass_side");
-            LoadImage(currentDirectory + @"\Textures\Grass_Top.png", "grass_top");
-            LoadImage(currentDirectory + @"\Textures\Grass_Bottom.png", "grass_bottom");
+            LoadImage(Path.Combine(mainFolderDirectory, "Textures\\Grass_Side.png"), "grass_side");
+            LoadImage(Path.Combine(mainFolderDirectory, "Textures\\Grass_Top.png"), "grass_top");
+            LoadImage(Path.Combine(mainFolderDirectory, "Textures\\Grass_Bottom.png"), "grass_bottom");
         }
         
         /// <summary>
@@ -50,9 +53,10 @@ namespace Cube_Game
                 OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
  
             image.UnlockBits(data);
+            
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
  
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
- 
         }
 
         public static int GetTexture(string name)

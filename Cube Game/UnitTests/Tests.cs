@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cube_Game;
 using NUnit.Framework;
 using OpenTK;
@@ -13,17 +14,14 @@ namespace UnitTests
         public void GetCulledIndices_Test()
         {
             List<Direction> directions = new List<Direction> {Direction.Above, Direction.East, Direction.West};
-            int usedVerticeCount;
-            int[] result = BlockMesh.GetCulledIndices(directions, out usedVerticeCount);
+            var result = BlockMesh.GetCulledIndices(directions);
             
-            Assert.AreEqual(result, new []
+            Assert.AreEqual(result, new int[]
             {
-                6, 2, 3, 3, 7, 6, //Above
-                1, 2, 6, 6, 5, 1, //East
-                0, 2, 1, 0, 3, 2 //West
+                0, 1, 2, 2, 3, 0,
+                4, 5, 6, 6, 7, 4,
+                8, 9, 10, 10, 11, 8
             });
-            
-            Assert.AreEqual(18, usedVerticeCount);
         }
 
         [Test]
@@ -89,15 +87,42 @@ namespace UnitTests
                 new Vector3(4.5f, 1.5f,  1.5f), //Left Top Front
             },result);
         }
-        
-        // [Test]
-        // public void GetVerticeCount_Test()
-        // {
-        //     Chunk chunk = new Chunk();
-        //     chunk.FillUpToY(1, BlockType.Dirt);
-        //     chunk.GenerateMeshData();
-        //     
-        //     Assert.AreEqual(9216 ,chunk.UsedVerticeCount); //16 blocks * 16 blocks * 36 indices per block.
-        // }
+
+        [Test]
+        public void GetCulledVertices_Test()
+        {
+            Chunk chunk = new Chunk();
+            
+            //Covering left and right of a block.
+            chunk.SetBlock(new Vector3(5, 5, 5), BlockType.Dirt);   
+            chunk.SetBlock(new Vector3(4, 5, 5), BlockType.Dirt);   
+            chunk.SetBlock(new Vector3(6, 5, 5), BlockType.Dirt);
+
+            int usedVertCount = 0;
+            var result = BlockMesh.GetCulledVertices(chunk.SidesExposedToAir(new Vector3(5, 5, 5)), out usedVertCount,
+                new Vector3(0, 0, 0)).ToList();
+            
+            Assert.AreEqual(new Vector3[]
+            {
+                new Vector3(-0.5f, 0.5f,  0.5f), //Left Top Front 7
+                new Vector3(0.5f, 0.5f,  0.5f), //Right Top Front 6
+                new Vector3(0.5f, 0.5f,  -0.5f), //Right Top Back 2
+                new Vector3(-0.5f, 0.5f,  -0.5f), //Left Top Back 3
+                new Vector3(-0.5f, -0.5f,  -0.5f), //Left Bottom Back 0
+                new Vector3(0.5f, -0.5f,  -0.5f), //Right Bottom Back 1
+                new Vector3(0.5f, -0.5f,  0.5f), //Right Bottom Front 5
+                new Vector3(-0.5f, -0.5f,  0.5f), //Left Bottom Front 4
+                new Vector3(-0.5f, -0.5f,  -0.5f), //Left Bottom Back 0
+                new Vector3(0.5f, -0.5f,  -0.5f), //Right Bottom Back 1
+                new Vector3(0.5f, 0.5f,  -0.5f), //Right Top Back 2
+                new Vector3(-0.5f, 0.5f,  -0.5f), //Left Top Back 3
+                new Vector3(-0.5f, -0.5f,  0.5f), //Left Bottom Front 4
+                new Vector3(0.5f, -0.5f,  0.5f), //Right Bottom Front 5
+                new Vector3(0.5f, 0.5f,  0.5f), //Right Top Front 6
+                new Vector3(-0.5f, 0.5f,  0.5f) //Left Top Front 7
+            }, result);
+            
+            Assert.AreEqual(16, usedVertCount);
+        }
     }
 }

@@ -153,6 +153,8 @@ namespace Cube_Game
             // Handling corner blocks. Their exposed faces should still be rendered.
             if ((int)coordinate.Y == 0 && !directions.Contains(Direction.Below))
                 directions.Add(Direction.Below);
+            if ((int)coordinate.Y == ChunkHeight - 1 && !directions.Contains(Direction.Above))
+                directions.Add(Direction.Above);
             if ((int)coordinate.X == 0 && !directions.Contains(Direction.West))
                 directions.Add(Direction.West);
             if ((int)coordinate.X == ChunkWidth - 1 && !directions.Contains(Direction.East))
@@ -172,7 +174,6 @@ namespace Cube_Game
             List<Vector2> texCoords = new List<Vector2>();
         
             int vertCount = 0;
-            int indiceCount = 0;
         
             for (int x = 0; x < ChunkWidth; x++)
             {
@@ -183,24 +184,24 @@ namespace Cube_Game
                         //Don't hand back mesh data for air blocks.
                         if (Blocks[x, y, z] != (int) BlockType.Air)
                         {
-                            int usedFaceCount = 0;
+                            int usedVertCount = 0;
+                            var sidesExposedToAir = SidesExposedToAir(new Vector3(x, y, z));
                             
-                            vertices.AddRange(BlockMesh.GetAllVertices(new Vector3(x, y, z)).ToList());
-                            indices.AddRange(BlockMesh.GetCulledIndices(SidesExposedToAir(new Vector3(x, y, z)), out usedFaceCount, vertCount).ToList());
+                            vertices.AddRange(BlockMesh.GetCulledVertices(sidesExposedToAir, out usedVertCount, new Vector3(x / 2, y / 2, z / 2)).ToList());
+                            indices.AddRange(BlockMesh.GetCulledIndices(sidesExposedToAir, vertCount));
                             texCoords.AddRange(BlockMesh.GetTextureCoords());
         
-                            vertCount += BlockMesh.VertCount;
-                            indiceCount += usedFaceCount * 6;
+                            vertCount += usedVertCount;
                         }
                     }
                 }
             }
 
-            UsedVerticeCount = vertCount;
-            UsedIndiceCount = indiceCount;
-            HasChanged = false; //method was called, meaning the new data has been sent back out.
-            
-            return (vertices.ToArray(), indices.ToArray(), texCoords.ToArray());
+            UsedVerticeCount = vertCount; //Value is reset after each call to function.
+            UsedIndiceCount = vertCount / 4 * 6; //Calculating the number of faces and then multiplying by indices per face.
+            HasChanged = false; //Method was called, meaning the new data has been sent back out.
+
+            return(vertices.ToArray(), indices.ToArray(), texCoords.ToArray());
         }
     }
 }

@@ -20,14 +20,14 @@ namespace Cube_Game
         {
             Vector3[] vertices =
             {
-                new Vector3(-0.5f, -0.5f,  -0.5f), //Left Bottom Back
-                new Vector3(0.5f, -0.5f,  -0.5f), //Right Bottom Back
-                new Vector3(0.5f, 0.5f,  -0.5f), //Right Top Back
-                new Vector3(-0.5f, 0.5f,  -0.5f), //Left Top Back
-                new Vector3(-0.5f, -0.5f,  0.5f), //Left Bottom Front
-                new Vector3(0.5f, -0.5f,  0.5f), //Right Bottom Front
-                new Vector3(0.5f, 0.5f,  0.5f), //Right Top Front
-                new Vector3(-0.5f, 0.5f,  0.5f), //Left Top Front
+                new Vector3(-0.5f, -0.5f,  -0.5f), //Left Bottom Back 0
+                new Vector3(0.5f, -0.5f,  -0.5f), //Right Bottom Back 1
+                new Vector3(0.5f, 0.5f,  -0.5f), //Right Top Back 2
+                new Vector3(-0.5f, 0.5f,  -0.5f), //Left Top Back 3
+                new Vector3(-0.5f, -0.5f,  0.5f), //Left Bottom Front 4
+                new Vector3(0.5f, -0.5f,  0.5f), //Right Bottom Front 5
+                new Vector3(0.5f, 0.5f,  0.5f), //Right Top Front 6
+                new Vector3(-0.5f, 0.5f,  0.5f), //Left Top Front 7
             };
             
             if (offset != Vector3.Zero)
@@ -41,111 +41,52 @@ namespace Cube_Game
             return vertices;
         }
         
-        public static Vector3[] GetCulledVertices(List<Direction> directions, out int usedVertexCount, int offset = 0)
+        public static Vector3[] GetCulledVertices(List<Direction> directions, out int usedVertexCount, Vector3 offset = new Vector3())
         {
-            int[] westVertices = {0, 4, 7, 7, 3, 0};
-            int[] southVertices = {1, 0, 3, 3, 2, 1};
-            int[] eastVertices = {1, 2, 6, 6, 5, 1};
-            int[] northVertices = {4, 5, 6, 6, 7, 4};
-            int[] aboveVertices = {6, 2, 3, 3, 7, 6};
-            int[] belowVertices = {0, 1, 5, 5, 4, 0};
+            Vector3[] westVertices =
+            {
+                new Vector3(-0.5f, -0.5f,  -0.5f), //Left Bottom Back 0
+                new Vector3(-0.5f, -0.5f,  0.5f), //Left Bottom Front 4
+                new Vector3(-0.5f, 0.5f,  0.5f), //Left Top Front 7
+                new Vector3(-0.5f, 0.5f,  -0.5f) //Left Top Back 3
+            };
+            Vector3[] southVertices =
+            {
+                new Vector3(-0.5f, -0.5f,  -0.5f), //Left Bottom Back 0
+                new Vector3(0.5f, -0.5f,  -0.5f), //Right Bottom Back 1
+                new Vector3(0.5f, 0.5f,  -0.5f), //Right Top Back 2
+                new Vector3(-0.5f, 0.5f,  -0.5f) //Left Top Back 3
+            };
+            Vector3[] eastVertices =
+            {
+                new Vector3(0.5f, -0.5f,  0.5f), //Right Bottom Front 5
+                new Vector3(0.5f, -0.5f,  -0.5f), //Right Bottom Back 1
+                new Vector3(0.5f, 0.5f,  -0.5f), //Right Top Back 2
+                new Vector3(0.5f, 0.5f,  0.5f) //Right Top Front 6
+            };
+            Vector3[] northVertices =
+            {
+                new Vector3(-0.5f, -0.5f,  0.5f), //Left Bottom Front 4
+                new Vector3(0.5f, -0.5f,  0.5f), //Right Bottom Front 5
+                new Vector3(0.5f, 0.5f,  0.5f), //Right Top Front 6
+                new Vector3(-0.5f, 0.5f,  0.5f) //Left Top Front 7
+            };
+            Vector3[] aboveVertices =
+            {
+                new Vector3(-0.5f, 0.5f,  0.5f), //Left Top Front 7
+                new Vector3(0.5f, 0.5f,  0.5f), //Right Top Front 6
+                new Vector3(0.5f, 0.5f,  -0.5f), //Right Top Back 2
+                new Vector3(-0.5f, 0.5f,  -0.5f) //Left Top Back 3
+            };
+            Vector3[] belowVertices =
+            {
+                new Vector3(-0.5f, -0.5f,  -0.5f), //Left Bottom Back 0
+                new Vector3(0.5f, -0.5f,  -0.5f), //Right Bottom Back 1
+                new Vector3(0.5f, -0.5f,  0.5f), //Right Bottom Front 5
+                new Vector3(-0.5f, -0.5f,  0.5f) //Left Bottom Front 4
+            };
             
             List<Vector3> culledVertices = new List<Vector3>();
-
-            // //Add all the requested directions to a temporary list.
-            // foreach (Direction direction in directions)
-            // {
-            //     switch (direction)
-            //     {
-            //         case Direction.Above:
-            //             culledVertices.AddRange(aboveVertices);
-            //             break;
-            //         case Direction.Below:
-            //             culledVertices.AddRange(belowVertices);
-            //             break;
-            //         case Direction.West:
-            //             culledVertices.AddRange(westVertices);
-            //             break;
-            //         case Direction.East:
-            //             culledVertices.AddRange(eastVertices);
-            //             break;
-            //         case Direction.North:
-            //             culledVertices.AddRange(northVertices);
-            //             break;
-            //         case Direction.South:
-            //             culledVertices.AddRange(southVertices);
-            //             break;
-            //     }
-            // }
-            //
-            // if (offset != 0)
-            // {
-            //     for (int i = 0; i < culledVertices.Count; i++)
-            //     {
-            //         culledVertices[i] += offset;
-            //     }
-            // }
-
-            usedVertexCount = directions.Count * 6; //Each face has 6 indices.
-            //return culledVertices.ToArray();
-            return new Vector3[]
-            {
-                
-            };
-        }
-
-        
-        /// <summary>
-        /// Returns all the indices of a cube.
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <returns></returns>
-        public static int[] GetAllIndices(int offset = 0)
-        {
-            int[] indices = 
-            {
-                //west
-                0, 4, 7, 7, 3, 0,
-                //south
-                1, 0, 3, 3, 2, 1,
-                //east
-                1, 2, 6, 6, 5, 1,
-                //above
-                6, 2, 3, 3, 7, 6,
-                //north
-                4, 5, 6, 6, 7, 4,
-                //below
-                0, 1, 5, 5, 4, 0
-            };
-            
-            if (offset != 0)
-            {
-                for (int i = 0; i < indices.Length; i++)
-                {
-                    indices[i] += offset;
-                }
-            }
-            
-            return indices;
-        }
-
-        /// <summary>
-        /// Generate a cube's indices given the sides that are to be rendered.
-        /// </summary>
-        /// <param name="directions"></param>
-        /// <param name="usedFaceCount"></param>
-        /// <param name="offset"></param>
-        /// <returns></returns>
-        public static int[] GetCulledIndices(List<Direction> directions, out int usedFaceCount, int offset = 0)
-        {
-            int[] westIndices = {0, 4, 7, 7, 3, 0};
-            int[] southIndices = {1, 0, 3, 3, 2, 1};
-            int[] eastIndices = {1, 2, 6, 6, 5, 1};
-            int[] northIndices = {4, 5, 6, 6, 7, 4};
-            int[] aboveIndices = {6, 2, 3, 3, 7, 6};
-            int[] belowIndices = {0, 1, 5, 5, 4, 0};
-            
-            List<int> culledIndices = new List<int>();
 
             //Add all the requested directions to a temporary list.
             foreach (Direction direction in directions)
@@ -153,51 +94,74 @@ namespace Cube_Game
                 switch (direction)
                 {
                     case Direction.Above:
-                        culledIndices.AddRange(aboveIndices);
+                        culledVertices.AddRange(aboveVertices);
                         break;
                     case Direction.Below:
-                        culledIndices.AddRange(belowIndices);
+                        culledVertices.AddRange(belowVertices);
                         break;
                     case Direction.West:
-                        culledIndices.AddRange(westIndices);
+                        culledVertices.AddRange(westVertices);
                         break;
                     case Direction.East:
-                        culledIndices.AddRange(eastIndices);
+                        culledVertices.AddRange(eastVertices);
                         break;
                     case Direction.North:
-                        culledIndices.AddRange(northIndices);
+                        culledVertices.AddRange(northVertices);
                         break;
                     case Direction.South:
-                        culledIndices.AddRange(southIndices);
+                        culledVertices.AddRange(southVertices);
                         break;
                 }
             }
             
-            if (offset != 0)
+            if (offset != Vector3.Zero)
             {
-                for (int i = 0; i < culledIndices.Count; i++)
+                for (int i = 0; i < culledVertices.Count; i++)
                 {
-                    culledIndices[i] += offset;
+                    culledVertices[i] += offset;
                 }
             }
+            
+            usedVertexCount = directions.Count * 4;
+            return culledVertices.ToArray();
+        }
+        
+        public static int[] GetCulledIndices(List<Direction> directions, int offset = 0)
+        {
+            List<int> culledIndices = new List<int>();
+            int[] indices = {0, 1, 2, 2, 3, 0};
 
-            usedFaceCount = directions.Count * 6; //Each face has 6 indices.
+            int facesAdded = 0; //Number of faces we've added to the list so far.
+            
+            foreach (Direction direction in directions)
+            {
+                if (direction == Direction.South)
+                    culledIndices.AddRange(OffsetData(indices, offset + facesAdded).Reverse());
+                else
+                    culledIndices.AddRange(OffsetData(indices, offset + facesAdded));
+                
+                facesAdded += 4; //Offset by the number of vertices in each face.
+            }
+
             return culledIndices.ToArray();
         }
 
-        public static Vector3[] GetColorData()
+        public static int[] OffsetData(int[] data, int offset)
         {
-            return new Vector3[] 
+            //Add the data to our new array to be passed back.
+            int[] modifiedData = new int[data.Length];
+            for (int i = 0; i < data.Length; i++)
+                modifiedData[i] = data[i];
+            
+            if (offset != 0)
             {
-                new Vector3( 1f, 0f, 0f),
-                new Vector3( 0f, 0f, 1f),
-                new Vector3( 0f, 1f, 0f),
-                new Vector3( 1f, 0f, 0f),
-                new Vector3( 0f, 0f, 1f),
-                new Vector3( 0f, 1f, 0f),
-                new Vector3( 1f, 0f, 0f),
-                new Vector3( 0f, 0f, 1f)
-            };
+                for (int i = 0; i < data.Length; i++)
+                {
+                    modifiedData[i] += offset;
+                }
+            }
+
+            return modifiedData.ToArray();
         }
 
         public static Matrix4 CalculateModelMatrix(Vector3 position, float scale = 1f)

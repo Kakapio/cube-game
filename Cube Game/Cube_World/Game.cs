@@ -16,10 +16,10 @@ namespace Cube_Game
         
         private Vector2 lastMousePos;
         private string activeShader = "textured";
-        private int iboElements;
+        private int ebo;
 
         private Vector3[] vertData;
-        private int[] indiceData;
+        private int[] indexData;
         private Vector2[] texCoordData;
 
         public Game (int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
@@ -33,12 +33,12 @@ namespace Cube_Game
             shaders.Add("textured", new ShaderProgram("vs_tex.glsl", "fs_tex.glsl", true));
             
             chunk.FillUpToY(15, BlockType.Dirt);
-            chunk.SetBlock(new Vector3(5, 15, 0), BlockType.Dirt);
-            chunk.SetBlock(new Vector3(5, 14, 8), BlockType.Air);
-            chunk.SetBlock(new Vector3(5, 14, 9), BlockType.Air);
+            chunk.SetBlock(new Vector3(5, 16, 5), BlockType.Dirt);
+            chunk.SetBlock(new Vector3(4, 15, 5), BlockType.Air);
             
             lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
             CursorVisible = false;
+            chunk.HasChanged = true;
         }
         
         protected override void OnLoad(EventArgs e)
@@ -46,7 +46,7 @@ namespace Cube_Game
             base.OnLoad(e);
 
             Initialize();
-            GL.GenBuffers(1, out iboElements);
+            GL.GenBuffers(1, out ebo);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
             GL.ClearColor(0.047f, 0.474f, 0.811f, 1.0f);
@@ -62,7 +62,7 @@ namespace Cube_Game
             //Only re-mesh chunk data and send it to the GPU when the chunk has changed.
             if (chunk.HasChanged)
             {
-                (vertData, indiceData, texCoordData) = chunk.GenerateMeshData();
+                (vertData, indexData, texCoordData) = chunk.GenerateMeshData();
 
                 GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vPosition"));
                 GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr) (vertData.Length * Vector3.SizeInBytes), vertData,
@@ -79,10 +79,9 @@ namespace Cube_Game
 
                 GL.UseProgram(shaders[activeShader].ProgramID);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
-                GL.BindBuffer(BufferTarget.ElementArrayBuffer, iboElements);
-                GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr) (indiceData.Length * sizeof(int)), indiceData,
-                    BufferUsageHint.StaticDraw);
+                
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
+                GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr) (indexData.Length * sizeof(int)), indexData, BufferUsageHint.DynamicDraw);
             }
         }
 
@@ -114,7 +113,7 @@ namespace Cube_Game
         {
             base.OnFocusedChanged(e);
             
-            lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y); 
+            lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
         }
 
         private void ProcessInput(float deltaTime)

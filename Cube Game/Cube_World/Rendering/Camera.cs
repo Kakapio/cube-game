@@ -5,7 +5,7 @@ namespace Cube_Game
 {
     public class Camera
     {
-        public Vector3 Position = new Vector3(5, 2, 9);
+        public Vector3 Position = new Vector3(0, 0, 0);
         public Vector3 Orientation = new Vector3((float)Math.PI, 0f, 0f);
         public Matrix4 ViewProjectionMatrix;
         public float MoveSpeed = 0.1f;
@@ -61,7 +61,7 @@ namespace Cube_Game
         public void UpdateViewProjectionMatrix()
         {
             ViewProjectionMatrix = GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f,
-                screenWidth / (float)screenHeight, 1.0f, 40.0f);
+                screenWidth / (float)screenHeight, 0.1f, 100.0f);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 ## Technical Information
 
-Project was implemented with OpenTK and C#. OpenTK is a binding for OpenGL that was used to setup the rendering systems to properly display the cubes. I adding culling and chunking techniques to my code to increase performance. This ensures that only visible faces and vertices get sent to the GPU buffers before being rendered. I also have texture support in this project to give blocks some color.
+Project was implemented with OpenTK and C#. OpenTK is a binding for OpenGL that was used to setup the rendering systems to properly display the cubes. I adding culling and chunking techniques to my code to increase performance. This ensures that only visible faces and vertices get sent to the GPU buffer before being rendered. I also have texture support in this project to give blocks some color.
 
 ## Demonstration
 
